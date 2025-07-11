@@ -1,6 +1,35 @@
-# ECCN Agent
+# ECCN Agent - AWS Deployment
+
+🚀 **One-Click AWS Deployment using Pulumi**
 
 A tool to help customers suggest Export Control Classification Numbers (ECCN) based on ECCN documentation.
+
+## 🚀 Quick Deployment
+
+### Prerequisites
+- AWS CLI configured with appropriate permissions
+- Pulumi CLI installed 
+- Bedrock model access for: `us.anthropic.claude-3-7-sonnet-20250219-v1:0`, `cohere.embed-multilingual-v3`
+
+### Deploy
+```bash
+cd pulumi
+cp .env.example .env
+# Edit .env with your AWS credentials
+source .env
+pulumi plugin install resource command
+pulumi up --yes
+```
+
+### What Gets Deployed
+- ✅ **Lambda Layer**: Auto-built with all dependencies
+- ✅ **OpenSearch Service**: Managed cluster (t3.small.search)
+- ✅ **Lambda Functions**: CCL ingestion + ECCN analysis
+- ✅ **Function URL**: Public endpoint for testing
+- ✅ **S3 Bucket**: Document storage
+- ✅ **Auto CCL Ingestion**: 606 ECCN entries embedded automatically
+
+**Deployment Time**: ~20 minutes
 
 ## Background
 
