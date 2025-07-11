@@ -1,0 +1,240 @@
+name: eccn-agent-main
+runtime: yaml
+description: ECCN Agent Main Lambda functions deployment with OpenSearch
+
+# Required providers
+providers:
+  aws: {}
+  command: {}
+
+variables:
+  stackName: eccn-agent-main
+  awsRegion: us-east-1
+  accountId: "654654199195"
+
+resources:
+  # Build Lambda Layer (automatically create layer.zip)
+  buildLayer:
+    type: command:local:Command
+    properties:
+      create: |
+        cd ../src/lambda_layers/third_party
+        # Create requirements.txt if it doesn't exist
+        if [ ! -f requirements.txt ]; then
+          cat > requirements.txt << EOF
+        opensearch-py==2.4.2
+        pymupdf4llm==0.0.12
+        boto3==1.35.36
+        requests==2.31.0
+        requests-aws4auth==1.2.3
+        EOF
+        fi
+        
+        # Build the layer
+        rm -rf python/ layer.zip
+        mkdir -p python
+        pip install -r requirements.txt -t python/
+        zip -r layer.zip python/
+        echo "Layer built successfully"
+      delete: |
+        cd ../src/lambda_layers/third_party
+        rm -rf python/ layer.zip
+        echo "Layer cleaned up"
+
+  # Lambda Layer for dependencies
+  dependenciesLayer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-dependencies
+      description: ECCN Agent dependencies (opensearch-py, pymupdf4llm, boto3)
+      code:
+        fn::fileArchive: ../src/lambda_layers/third_party/layer.zip
+      compatibleRuntimes:
+        - python3.10
+      compatibleArchitectures:
+        - x86_64
+    options:
+      dependsOn:
+        - ${buildLayer}
+
+  # OpenSearch Service Domain (managed cluster)
+  opensearchDomain:
+    type: aws:opensearch:Domain
+    properties:
+      domainName: ${stackName}-domain
+      engineVersion: "OpenSearch_2.15"
+      clusterConfig:
+        instanceType: t3.small.search
+        instanceCount: 1
+      ebsOptions:
+        ebsEnabled: true
+        volumeType: gp3
+        volumeSize: 20
+      accessPolicies: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [
+                  "arn:aws:iam::${accountId}:role/AIWebSearch-AgentLambdaRole-7AAqt7ZLhLi0",
+                  "arn:aws:iam::${accountId}:user/wayne.chiu@advantech.com"
+                ]
+              },
+              "Action": "es:*",
+              "Resource": "arn:aws:es:${awsRegion}:${accountId}:domain/${stackName}-domain/*"
+            }
+          ]
+        }
+      domainEndpointOptions:
+        enforceHttps: true
+      encryptAtRest:
+        enabled: true
+      nodeToNodeEncryption:
+        enabled: true
+
+  # S3 Bucket for data storage
+  dataBucket:
+    type: aws:s3:Bucket
+    properties:
+      bucket: ${stackName}-data-${awsRegion}
+      acl: private
+      versioning:
+        enabled: true
+      serverSideEncryptionConfiguration:
+        rule:
+          applyServerSideEncryptionByDefault:
+            sseAlgorithm: AES256
+
+  # CCL Ingestion Lambda Function  
+  cclIngestionLambda:
+    type: aws:lambda:Function
+    properties:
+      name: ${stackName}-ccl-ingestion
+      description: CCL data ingestion Lambda function for ECCN classification
+      runtime: python3.10
+      handler: handler.lambda_handler
+      memorySize: 1024
+      timeout: 900
+      role: arn:aws:iam::654654199195:role/AIWebSearch-AgentLambdaRole-7AAqt7ZLhLi0
+      layers:
+        - ${dependenciesLayer.arn}
+      code:
+        fn::fileArchive: ../src/lambdas/ccl_ingestion
+      environment:
+        variables:
+          OPENSEARCH_ENDPOINT: "https://search-eccn-agent-main-domain-otccw4tfus2ki55ehlo3gt3hja.us-east-1.es.amazonaws.com"
+          EMBEDDING_MODEL_ID: cohere.embed-multilingual-v3
+          EMBEDDING_MODEL_DIMENSION: "1024"
+          OPENSEARCH_INDEX: eccn
+          LOG_LEVEL: DEBUG
+          AWS_ACCESS_KEY_ID_CUSTOM: ${AWS_ACCESS_KEY_ID_CUSTOM}
+          AWS_SECRET_ACCESS_KEY_CUSTOM: ${AWS_SECRET_ACCESS_KEY_CUSTOM}
+
+  # Find ECCN Lambda Function
+  findEccnLambda:
+    type: aws:lambda:Function
+    properties:
+      name: ${stackName}-find-eccn
+      description: ECCN Agent Lambda function for product classification with multipart support
+      runtime: python3.10
+      handler: handler.lambda_handler
+      memorySize: 1024
+      timeout: 900
+      role: arn:aws:iam::654654199195:role/AIWebSearch-AgentLambdaRole-7AAqt7ZLhLi0
+      layers:
+        - ${dependenciesLayer.arn}
+      code:
+        fn::fileArchive: ../src/lambdas/find_eccn
+      environment:
+        variables:
+          OPENSEARCH_ENDPOINT: "https://search-eccn-agent-main-domain-otccw4tfus2ki55ehlo3gt3hja.us-east-1.es.amazonaws.com"
+          EMBEDDING_MODEL_ID: cohere.embed-multilingual-v3
+          OPENSEARCH_INDEX: eccn
+          LOG_LEVEL: DEBUG
+          DEFAULT_BEDROCK_MODEL_ID: us.anthropic.claude-3-7-sonnet-20250219-v1:0
+          AWS_ACCESS_KEY_ID_CUSTOM: ${AWS_ACCESS_KEY_ID_CUSTOM}
+          AWS_SECRET_ACCESS_KEY_CUSTOM: ${AWS_SECRET_ACCESS_KEY_CUSTOM}
+
+  # Lambda Function URL for Find ECCN
+  findEccnFunctionUrl:
+    type: aws:lambda:FunctionUrl
+    properties:
+      functionName: ${findEccnLambda.name}
+      authorizationType: NONE
+      cors:
+        allowCredentials: false
+        allowHeaders:
+          - content-type
+          - x-amz-date
+          - authorization
+          - x-api-key
+          - x-amz-security-token
+          - x-amz-user-agent
+        allowMethods:
+          - POST
+        allowOrigins:
+          - "*"
+        exposeHeaders:
+          - date
+          - keep-alive
+          - x-amz-request-id
+        maxAge: 86400
+
+  # Automatically ingest CCL data after deployment
+  ingestCclData:
+    type: command:local:Command
+    properties:
+      create: |
+        echo "Waiting for OpenSearch domain to be ready..."
+        sleep 60
+        echo "Invoking CCL data ingestion..."
+        aws lambda invoke --function-name ${cclIngestionLambda.name} --payload '{}' /tmp/ccl_ingestion_result.json
+        echo "CCL data ingestion completed"
+        cat /tmp/ccl_ingestion_result.json
+      delete: |
+        echo "CCL data ingestion cleanup (no action needed)"
+    options:
+      dependsOn:
+        - ${cclIngestionLambda}
+        - ${opensearchDomain}
+
+outputs:
+  cclIngestionFunctionName:
+    description: CCL Ingestion Lambda function name
+    value: ${cclIngestionLambda.name}
+
+  findEccnFunctionName:
+    description: Find ECCN Lambda function name
+    value: ${findEccnLambda.name}
+  
+  findEccnFunctionUrl:
+    description: Find ECCN Lambda Function URL for Postman testing
+    value: ${findEccnFunctionUrl.functionUrl}
+  
+  dependenciesLayerArn:
+    description: Lambda layer ARN
+    value: ${dependenciesLayer.arn}
+
+  dataBucketName:
+    description: S3 bucket for data storage
+    value: ${dataBucket.bucket}
+
+  opensearchDomainEndpoint:
+    description: OpenSearch Service domain endpoint
+    value: ${opensearchDomain.endpoint}
+
+
+  deploymentInfo:
+    description: Deployment information
+    value:
+      stackName: ${stackName}
+      region: ${awsRegion}
+      features:
+        - "CCL data ingestion Lambda"
+        - "Find ECCN Lambda with multipart support"
+        - "Claude 3.7 Sonnet integration"
+        - "Cohere multilingual embeddings"
+        - "Function URL with CORS for Postman"
+        - "S3 bucket for data storage"

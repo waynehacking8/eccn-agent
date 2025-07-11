@@ -1,0 +1,6 @@
+requests
+jsonschema
+opensearch-py
+tenacity
+boto3==1.38.2
+pymupdf4llm

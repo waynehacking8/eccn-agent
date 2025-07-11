@@ -1,0 +1,7 @@
+Serial Converter, RS-422 DB25 F to 5V TTL DB25 M
+
+Convert 2 channels in each direction: 5V TTL (“Transistor Transistor Logic)” to RS-422
+Data rate: up to 115.2 Kbps baud
+DB25 M / DB25 F
+Open pads to change pin configuration
+Power supply required (not included, sold separately)

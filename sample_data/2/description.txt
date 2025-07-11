@@ -1,0 +1,9 @@
+
+Isolated Thermocouple Input Module
+
+1000 VDC, fully isolated
+Configurable thermocouple type
+Flexible DIN-rail mounting
+Linearized thermocouple measurement
+Operates from a single +24VDC
+Temperature range of 0 to 50°C
