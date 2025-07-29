@@ -1,0 +1,4 @@
+pymupdf4llm==0.0.12
+boto3==1.39.9
+botocore==1.39.9
+requests==2.31.0

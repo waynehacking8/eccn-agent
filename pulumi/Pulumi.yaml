@@ -1,0 +1,271 @@
+name: eccn-two-lambda-pipeline
+runtime: yaml
+description: ECCN Agent Feature-Enhanced Pipeline - PDF feature extraction + Dynamic ECCN classification
+
+providers:
+  aws: {}
+  command: {}
+
+config:
+  aws:region: us-east-1
+
+variables:
+  stackName: eccn-two-lambda-pipeline
+  awsRegion: us-east-1
+  accountId: "654654199195"
+
+resources:
+  # S3 Bucket for data storage
+  dataBucket:
+    type: aws:s3:Bucket
+    properties:
+      bucket: ${stackName}-data-${awsRegion}
+      serverSideEncryptionConfiguration:
+        rule:
+          applyServerSideEncryptionByDefault:
+            sseAlgorithm: AES256
+      tags:
+        Project: "ECCN Classification Pipeline"
+        Environment: "Production"
+        Version: "v3.2-production"
+
+  # Upload embeddings to S3
+  uploadEmbeddings:
+    type: command:local:Command
+    properties:
+      create: |
+        echo "上傳 embeddings 到 S3..."
+        aws s3 cp data.pkl s3://${stackName}-data-${awsRegion}/data.pkl --region us-east-1
+        echo "Embeddings 上傳完成"
+      delete: |
+        echo "清理 S3 embeddings..."
+        aws s3 rm s3://${stackName}-data-${awsRegion}/data.pkl || true
+    options:
+      dependsOn:
+        - ${dataBucket}
+
+  # Lambda Layer Version - PyMuPDF4LLM for PDF processing
+  pymupdfLayer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-pymupdf4llm-layer
+      description: PyMuPDF4LLM layer for PDF content extraction
+      code:
+        fn::fileArchive: layers/pdf_processor.zip
+      compatibleRuntimes:
+        - python3.12
+      compatibleArchitectures:
+        - x86_64
+
+  # Requests Layer for HTTP calls
+  requestsLayer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-requests-layer
+      description: Requests library for HTTP calls
+      code:
+        fn::fileArchive: layers/requests_layer.zip
+      compatibleRuntimes:
+        - python3.12
+      compatibleArchitectures:
+        - x86_64
+
+  # Main Layer with embeddings and prompts
+  mainLayer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-main-layer
+      description: Main layer with embeddings and prompts
+      code:
+        fn::fileArchive: layers/eccn_classifier.zip
+      compatibleRuntimes:
+        - python3.10
+      compatibleArchitectures:
+        - x86_64
+
+  # BeautifulSoup4 Layer for WebSearch
+  bs4Layer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-bs4-layer
+      description: BeautifulSoup4 and lxml for WebSearch functionality
+      code:
+        fn::fileArchive: bs4_layer.zip
+      compatibleRuntimes:
+        - python3.10
+      compatibleArchitectures:
+        - x86_64
+
+
+  # PDF Parser Lambda Function
+  pdfParserLambda:
+    type: aws:lambda:Function
+    properties:
+      name: ${stackName}-pdfparser
+      description: "Step 1: PDF Parser Lambda - PyMuPDF4LLM -> S3"
+      runtime: python3.12
+      handler: pdf_parser.lambda_handler
+      code:
+        fn::fileArchive: pdf-parser-function.zip
+      memorySize: 1024
+      timeout: 900
+      ephemeralStorage:
+        size: 1024
+      role: arn:aws:iam::654654199195:role/AIWebSearch-AgentLambdaRole-7AAqt7ZLhLi0
+      layers:
+        - ${pymupdfLayer.arn}
+        - ${requestsLayer.arn}
+      environment:
+        variables:
+          LOG_LEVEL: INFO
+          S3_BUCKET_NAME: ${dataBucket.bucket}
+          PYTHONPATH: /opt/python:/var/task
+          PIPELINE_STEP: "1"
+          PIPELINE_ROLE: "PDF_PARSER"
+          MAIN_CLASSIFIER_URL: ${eccnClassificationFunctionUrl.functionUrl}
+    options:
+      dependsOn:
+        - ${pymupdfLayer}
+        - ${requestsLayer}
+        - ${dataBucket}
+
+  # Main ECCN Classification Lambda Function
+  eccnClassificationLambda:
+    type: aws:lambda:Function
+    properties:
+      name: ${stackName}-main
+      description: "Step 2: Main Classification Lambda - eccn_classifier.py + prompts.py + Bedrock"
+      runtime: python3.10
+      handler: lambda_function.lambda_handler
+      code:
+        fn::fileArchive: main-classifier-function.zip
+      memorySize: 2048
+      timeout: 900
+      ephemeralStorage:
+        size: 2048
+      role: arn:aws:iam::654654199195:role/AIWebSearch-AgentLambdaRole-7AAqt7ZLhLi0
+      layers:
+        - ${mainLayer.arn}
+        - ${bs4Layer.arn}
+      environment:
+        variables:
+          LOG_LEVEL: INFO
+          DEFAULT_BEDROCK_MODEL_ID: us.anthropic.claude-3-7-sonnet-20250219-v1:0
+          USE_S3_EMBEDDINGS: "true"
+          S3_BUCKET_NAME: ${dataBucket.bucket}
+          EMBEDDINGS_S3_KEY: "data.pkl"
+          PYTHONPATH: /opt/python:/var/task
+          PIPELINE_STEP: "2"
+          PIPELINE_ROLE: "MAIN_CLASSIFIER"
+          SYSTEM_PROMPT_SOURCE: "prompts.py"
+          MOUSER_API_KEY: "0b82bbb0-3088-4d5c-baa1-f6997f0dcaf7"
+          TOOLS_ENABLED: "true"
+    options:
+      dependsOn:
+        - ${mainLayer}
+        - ${bs4Layer}
+        - ${dataBucket}
+        - ${uploadEmbeddings}
+
+  # PDF Parser Lambda Function URL
+  pdfParserFunctionUrl:
+    type: aws:lambda:FunctionUrl
+    properties:
+      functionName: ${pdfParserLambda.name}
+      authorizationType: NONE
+      cors:
+        allowCredentials: false
+        allowHeaders:
+          - "content-type"
+          - "x-amz-date"
+          - "authorization"
+          - "x-api-key"
+          - "x-amz-security-token"
+          - "x-amz-user-agent"
+        allowMethods:
+          - "POST"
+        allowOrigins:
+          - "*"
+        exposeHeaders:
+          - "date"
+          - "keep-alive"
+          - "x-amz-request-id"
+        maxAge: 86400
+    options:
+      dependsOn:
+        - ${pdfParserLambda}
+
+  # Main Classification Lambda Function URL
+  eccnClassificationFunctionUrl:
+    type: aws:lambda:FunctionUrl
+    properties:
+      functionName: ${eccnClassificationLambda.name}
+      authorizationType: NONE
+      cors:
+        allowCredentials: false
+        allowHeaders:
+          - "content-type"
+          - "x-amz-date"
+          - "authorization"
+          - "x-api-key"
+          - "x-amz-security-token"
+          - "x-amz-user-agent"
+        allowMethods:
+          - "POST"
+          - "GET"
+        allowOrigins:
+          - "*"
+        exposeHeaders:
+          - "date"
+          - "keep-alive"
+          - "x-amz-request-id"
+        maxAge: 86400
+    options:
+      dependsOn:
+        - ${eccnClassificationLambda}
+
+  # Lambda permissions for Function URLs
+  pdfParserInvokePermission:
+    type: aws:lambda:Permission
+    properties:
+      statementId: allow-function-url
+      action: lambda:InvokeFunctionUrl
+      function: ${pdfParserLambda.name}
+      principal: "*"
+      functionUrlAuthType: NONE
+    options:
+      dependsOn:
+        - ${pdfParserFunctionUrl}
+
+  eccnClassificationInvokePermission:
+    type: aws:lambda:Permission
+    properties:
+      statementId: allow-function-url
+      action: lambda:InvokeFunctionUrl
+      function: ${eccnClassificationLambda.name}
+      principal: "*"
+      functionUrlAuthType: NONE
+    options:
+      dependsOn:
+        - ${eccnClassificationFunctionUrl}
+
+outputs:
+  pdfParserUrl:
+    description: "Step 1: PDF Parser Lambda URL"
+    value: ${pdfParserFunctionUrl.functionUrl}
+  
+  mainClassifierUrl:
+    description: "Step 2: Main Classifier Lambda URL"
+    value: ${eccnClassificationFunctionUrl.functionUrl}
+  
+  pdfParserFunctionName:
+    description: "PDF Parser Lambda function name"
+    value: ${pdfParserLambda.name}
+  
+  eccnClassificationFunctionName:
+    description: "Main Classification Lambda function name"
+    value: ${eccnClassificationLambda.name}
+  
+  dataBucketName:
+    description: "S3 bucket for data storage"
+    value: ${dataBucket.bucket}

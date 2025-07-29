@@ -1,0 +1,86 @@
+# ECCN智能分析系統 - 完整項目依賴
+# 此文件涵蓋整個 eccn-agent_0727 項目的所有 Python 依賴
+
+# ===============================
+# 核心 AWS 服務
+# ===============================
+boto3==1.39.9                    # AWS SDK for Python
+botocore==1.39.9                 # AWS SDK for Python - 核心庫
+pulumi>=3.0.0                    # 基礎設施即代碼工具
+pulumi-aws>=6.0.0                # Pulumi AWS 提供商
+
+# ===============================  
+# PDF 處理和文檔分析
+# ===============================
+pymupdf4llm==0.0.12              # PDF 轉 Markdown，用於 Lambda
+PyPDF2>=3.0.0                   # PDF 文件讀取和處理
+pdfplumber>=0.9.0                # PDF 表格和文本提取
+pdfminer.six>=20221105           # PDF 內容挖掘
+
+# ===============================
+# 機器學習和嵌入向量
+# ===============================
+numpy>=1.24.0                   # 數值計算基礎庫
+scikit-learn>=1.3.0             # 機器學習算法（餘弦相似度）
+pandas>=2.0.0                   # 數據處理和分析
+openpyxl>=3.1.0                 # Excel 文件處理
+
+# ===============================
+# Web 請求和 API 集成
+# ===============================
+requests>=2.31.0                # HTTP 請求庫
+urllib3>=2.0.0                  # HTTP 客戶端
+beautifulsoup4>=4.13.4          # HTML/XML 解析器
+lxml>=6.0.0                     # XML/HTML 處理器
+soupsieve>=2.7                  # CSS 選擇器
+
+# ===============================
+# 加密和安全
+# ===============================
+cryptography>=45.0.0            # 加密功能
+cffi>=1.17.0                    # C Foreign Function Interface
+
+# ===============================
+# 圖像處理（可選）
+# ===============================
+Pillow>=11.3.0                  # 圖像處理庫
+Wand>=0.6.13                    # ImageMagick 綁定
+
+# ===============================
+# 字符編碼處理
+# ===============================
+charset-normalizer>=3.4.0       # 字符編碼檢測和規範化
+typing-extensions>=4.14.0       # 類型提示擴展
+
+# ===============================
+# 開發和測試工具
+# ===============================  
+# logging, json, tempfile, base64 等為 Python 標準庫，無需安裝
+
+# ===============================
+# 安裝說明
+# ===============================
+# 1. 創建虛擬環境（推薦）:
+#    python -m venv venv
+#    source venv/bin/activate  # Linux/Mac
+#    venv\Scripts\activate     # Windows
+
+# 2. 安裝依賴:
+#    pip install -r requirements.txt
+
+# 3. AWS 配置:
+#    aws configure
+#    或設置環境變數：AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+
+# 4. Pulumi 設置:
+#    pulumi login
+#    cd pulumi && pulumi up
+
+# ===============================
+# 項目組件說明
+# ===============================
+# - pulumi/: AWS 基礎設施部署
+# - src/lambdas/: Lambda 函數代碼
+# - src/sagemaker/: 機器學習和數據處理
+# - frontend/: 靜態 HTML 前端（Cloudflare Pages）
+# - sample_data/: 測試數據和 PDF 文件

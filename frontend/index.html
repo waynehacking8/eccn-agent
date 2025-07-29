@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECCN智能分析系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .file-info {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-container.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        .result-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .eccn-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .confidence-high { color: #28a745; }
+        .confidence-medium { color: #ffc107; }
+        .confidence-low { color: #dc3545; }
+
+        .reasoning-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .reasoning-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .reasoning-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 30px 20px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ ECCN智能分析系統</h1>
+            <p>Export Control Classification Number 智能分類分析</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">點擊上傳PDF文件或拖拽文件到此處</div>
+                <div class="upload-subtext">僅支援PDF格式，最大50MB</div>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf">
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+            </div>
+
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="analyzeBtn" disabled>🚀 開始分析</button>
+                <button class="btn btn-secondary" id="cancelBtn" disabled>❌ 取消分析</button>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">準備分析...</div>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-title">📊 分析結果</div>
+                <div id="resultContent"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultContent = document.getElementById('resultContent');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let selectedFile = null;
+        let analysisController = null;
+
+        // 文件上傳處理
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // 驗證文件類型
+            if (file.type !== 'application/pdf') {
+                showError('僅支援PDF格式文件');
+                return;
+            }
+
+            // 驗證文件大小 (50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                showError('文件大小不能超過50MB');
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('show');
+            analyzeBtn.disabled = false;
+            hideError();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 分析處理
+        analyzeBtn.addEventListener('click', startAnalysis);
+        cancelBtn.addEventListener('click', cancelAnalysis);
+
+        async function startAnalysis() {
+            if (!selectedFile) return;
+
+            // 更新UI狀態
+            analyzeBtn.disabled = true;
+            cancelBtn.disabled = false;
+            progressContainer.classList.add('show');
+            resultContainer.classList.remove('show');
+            hideError();
+
+            // 創建AbortController用於取消請求
+            analysisController = new AbortController();
+
+            try {
+                // 準備FormData
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                // 更新進度
+                updateProgress(10, '上傳文件中...');
+
+                // 發送請求到API代理
+                const response = await fetch('/api/proxy', {
+                    method: 'POST',
+                    body: formData,
+                    signal: analysisController.signal
+                });
+
+                updateProgress(50, '分析中...');
+
+                if (!response.ok) {
+                    throw new Error(`API請求失敗 (${response.status})`);
+                }
+
+                const result = await response.json();
+                updateProgress(100, '分析完成！');
+
+                // 顯示結果
+                displayResult(result);
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    showError('分析已被取消');
+                } else {
+                    showError(`分析失敗: ${error.message}`);
+                }
+            } finally {
+                // 重置UI狀態
+                analyzeBtn.disabled = false;
+                cancelBtn.disabled = true;
+                progressContainer.classList.remove('show');
+                analysisController = null;
+            }
+        }
+
+        function cancelAnalysis() {
+            if (analysisController) {
+                analysisController.abort();
+                updateProgress(0, '已取消分析');
+            }
+        }
+
+        function updateProgress(percent, text) {
+            progressFill.style.width = percent + '%';
+            progressText.textContent = text;
+        }
+
+        function displayResult(result) {
+            if (result.success && result.eccn_classification) {
+                const classification = result.eccn_classification;
+                
+                let html = `
+                    <div class="result-item">
+                        <div class="result-label">ECCN分類代碼</div>
+                        <div class="result-value eccn-code">${classification.eccn_code || 'N/A'}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">信心度</div>
+                        <div class="result-value confidence-${classification.confidence || 'low'}">${getConfidenceText(classification.confidence)}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">分析方法</div>
+                        <div class="result-value">${getMethodText(classification.method)}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">處理時間</div>
+                        <div class="result-value">${classification.processing_time || 'N/A'}</div>
+                    </div>
+                `;
+
+                if (classification.reasoning) {
+                    html += `
+                        <div class="reasoning-section">
+                            <div class="reasoning-title">🧠 推理過程</div>
+                            <div class="reasoning-content">${classification.reasoning}</div>
+                        </div>
+                    `;
+                }
+
+                if (classification.data_sources) {
+                    html += `
+                        <div class="reasoning-section">
+                            <div class="reasoning-title">📊 資料來源</div>
+                            <div class="reasoning-content">
+                                <strong>主要來源:</strong> ${classification.data_sources.primary_source || 'N/A'}<br>
+                    `;
+                    
+                    Object.entries(classification.data_sources).forEach(([key, value]) => {
+                        if (key !== 'primary_source') {
+                            html += `<strong>${getSourceName(key)}:</strong> ${value}<br>`;
+                        }
+                    });
+                    
+                    html += `</div></div>`;
+                }
+
+                resultContent.innerHTML = html;
+                resultContainer.classList.add('show');
+            } else {
+                showError(result.error || '分析失敗，請稍後重試');
+            }
+        }
+
+        function getConfidenceText(confidence) {
+            const map = {
+                'high': '高', 'medium': '中等', 'low': '低',
+                '高': '高', '中': '中等', '低': '低'
+            };
+            return map[confidence] || confidence || '未知';
+        }
+
+        function getMethodText(method) {
+            const map = {
+                'mouser_api_direct': 'Mouser API 直接查詢',
+                'complete_pipeline': '完整分析管道',
+                'enhanced_mouser_similarity': '增強型相似產品分析',
+                'llm_comprehensive_decision': 'AI綜合決策分析'
+            };
+            return map[method] || method || '未知';
+        }
+
+        function getSourceName(key) {
+            const map = {
+                'mouser_direct': 'Mouser直接查詢',
+                'pdf_feature_analysis': 'PDF特徵分析',
+                'mouser_similar_search': 'Mouser相似搜尋',
+                'websearch_validation': 'Web搜尋驗證',
+                'llm_decision': 'AI決策分析'
+            };
+            return map[key] || key;
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => hideError(), 5000);
+        }
+
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+    </script>
+</body>
+</html>

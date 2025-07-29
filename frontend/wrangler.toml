@@ -1,0 +1,30 @@
+# Cloudflare Pages 配置文件
+name = "eccn-frontend"
+compatibility_date = "2024-01-15"
+
+# Pages專案配置
+[env.production]
+# 環境變數
+[env.production.vars]
+ENVIRONMENT = "production"
+DEBUG = "false"
+PORT = "8080"
+PDF_PARSER_URL = "https://uk77kivopn5ivjsjjyci4uewha0erpwb.lambda-url.us-east-1.on.aws/"
+MAIN_CLASSIFIER_URL = "https://svls3lp6ulqwastjdrs3snpfce0cwazp.lambda-url.us-east-1.on.aws/"
+
+[env.staging]
+[env.staging.vars]
+ENVIRONMENT = "staging"
+DEBUG = "true"
+PORT = "8080"
+PDF_PARSER_URL = "https://uk77kivopn5ivjsjjyci4uewha0erpwb.lambda-url.us-east-1.on.aws/"
+MAIN_CLASSIFIER_URL = "https://svls3lp6ulqwastjdrs3snpfce0cwazp.lambda-url.us-east-1.on.aws/"
+
+# 建置配置
+[build]
+command = "python build.py"
+publish = "dist"
+
+# Pages特定設定
+[pages]
+compatibility_flags = [ "python_workers" ]

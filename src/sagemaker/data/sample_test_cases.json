@@ -1,0 +1,287 @@
+{
+  "prompt_template": "You are an expert in export control classifications who specializes in analyzing technical product information against the Commerce Control List (CCL) to determine appropriate Export Control Classification Numbers (ECCNs).\n\n## ECCN Structure\nECCNs follow a five-character format (#X###):\n- First digit (0-9): Represents the primary category\n- Letter: Indicates product group (e.g., A for systems/equipment, D for software)\n- Last three digits: Further classification specificity\n\n## Classification Guidelines: Computer vs. Telecommunications Equipment\n\n### Core Function Focus\n\n#### Choose \"Computer\" When:\n- **Primary Purpose:** Data processing, computation, or storage (servers, embedded controllers, AI accelerators)\n- **Key Activities:** \n  - Executing software-defined tasks (database management, machine learning)\n  - Managing hardware resources (CPU, GPU, memory)\n  - Communication devices primarily serving the computer's internal/external operations ()\n- **Examples:** Industrial automation systems, edge computing devices, high-performance computing clusters\n\n#### Choose \"Telecommunications\" When:\n- **Primary Purpose:** Transmitting/receiving information (voice, data, video) over distance\n- **Key Activities:**\n  - Enabling connectivity (wired/wireless) between endpoints\n  - Managing signal modulation, routing, or network protocols\n- **Examples:** 5G base stations, VoIP gateways, satellite modems\n\n### Technical Criteria\n\n| Aspect | Computer | Telecommunications |\n|--------|----------|-------------------|\n| Performance Metrics | FLOPS, memory bandwidth, storage capacity | Bandwidth, latency, frequency range, modulation efficiency |\n| Key Components | CPUs, GPUs, ASICs, storage drives, , internal networking components, standard connection ports | Antennas, transceivers, multiplexers, routers, switches |\n| Environmental Focus | Operating temperature (standard ranges) | Ruggedization for extreme environments (-54\u00b0C to 124\u00b0C+) |\n| Regulatory Triggers | Encryption strength, computational throughput | Frequency licensing, signal encryption, cross-border data protocols |\n\n## Process\n1. Carefully examine the provided product images and technical datasheets\n2. Extract key technical specifications and capabilities relevant to export control regulations\n3. Compare these specifications against CCL categories and parameters\n4. Think step-by-step through the classification decision process and pay attention to category 4 and 5 between Computer and Telecommunications\n5. Document your reasoning for including or excluding specific CCL categories\n6. Reflect critically on your initial determination, considering alternative classifications\n\n## Deliverable\nProvide a comprehensive analysis that:\n- Summarizes the product's key technical characteristics\n- Explains your classification methodology\n- Details your reasoning for the selected ECCN classification\n- Cites relevant CCL entries that support your determination\n- Includes a reflection section where you critically evaluate your initial determination and consider alternative classifications\n- Concludes with a final ECCN designation for the product\n\n## Important Notes\n- Be thorough in your analysis of all technical parameters\n- Consider dual-use possibilities and potential military applications\n- Document any assumptions made during the classification process\n- If multiple classifications could apply, explain why you selected the final ECCN\n- In your reflection, consider factors that might change your determination if additional information were available\n\nAt the end of your analysis, provide your conclusion in the following JSON format:\n```json\n[{\"eccn\": \"ECCN_CODE\", \"reason\": \"CONCISE_JUSTIFICATION\"}]\n```\n",
+  "test_cases": [
+    {
+      "product_description": "24GE+4G Combo Unmanaged Ethernet Switch,  19\" Rackmount, 100~240VAC, 0~60\u2103",
+      "product_pdf": "data/EKI-2428G-4CA-AE/EKI-2428G-4CA_DS(021120)20200317192322.pdf",
+      "product_image": "data/EKI-2428G-4CA-AE/EKI-2428G-4CA_02_Banner20200317192306.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "5FE Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2525-BE/EKI-2525_I_2528_I_DS(110320)20201103184806.pdf",
+      "product_image": "data/EKI-2525-BE/EKI-2525_02_S20160518163803.png",
+      "ground_truth": "5A991.b"
+    },
+    {
+      "product_description": "5FE Unmanaged Industrial Ethernet Switch, -40~75\u2103 ",
+      "product_pdf": "data/EKI-2525I-BE/EKI-2525_I_2528_I_DS(110320)20201103184839.pdf",
+      "product_image": "data/EKI-2525I-BE/EKI-2525I_02_B20200420174451.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "5FE Slim-type Unmanaged Industrial Ethernet Switch with Low VAC Power Input, -40~75\u2103",
+      "product_pdf": "data/EKI-2525I-LA-AE/EKI-2525I-LA_DS(052719)20240424142128.pdf",
+      "product_image": "data/EKI-2525I-LA-AE/EKI-2525LI_Front-left_Banner20240424142047.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "5FE Slim type Unmanaged Industrial Ethernet Switch",
+      "product_pdf": "data/EKI-2525LI-AE/EKI-2525LI_DS(20191015)20191016105154.pdf",
+      "product_image": "data/EKI-2525LI-AE/EKI-2525LI_Front right _S20180417111118.jpg",
+      "ground_truth": "5A991.b.1"
+    },
+    {
+      "product_description": "4FE+1FE SC Multi-mode Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2525M-BE/EKI-2525M_S_DS(061917)20200420184011.pdf",
+      "product_image": "data/EKI-2525M-BE/EKI-2525S_03_S20160518162144.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "4FE+1FE SC Multi-mode Unmanaged Ethernet Switch,  -40~75\u2103",
+      "product_pdf": "data/EKI-2525MI-BE/EKI-2525MI_SI_DS(030520)20200319170234.pdf",
+      "product_image": "data/EKI-2525MI-BE/EKI-2525MI_B20200317194401.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "4FE+1FE ST Multi-mode Unmanaged Ethernet Switch,  -40~75\u2103",
+      "product_pdf": "data/EKI-2525MI-ST-BE/EKI-2525MI_SI_DS(030520)20200319170303.pdf",
+      "product_image": "data/EKI-2525MI-ST-BE/EKI-2525MI-ST_B20200317195020.png",
+      "ground_truth": "4A994"
+    },
+    {
+      "product_description": "4FE+1FE SC Single-mode Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2525S-AE/EKI-2525M_S_DS(06.19.17)20170705202136.pdf",
+      "product_image": "data/EKI-2525S-AE/EKI-2525S_S20160516174326.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "4FE+2FE ST Multi-mode Unmanaged Ethernet Switch ",
+      "product_pdf": "data/EKI-2526M-AE/DS_EKI-2525M_2526M_S20150115170805.pdf",
+      "product_image": "data/EKI-2526M-AE/EKI-2526M_S20100901143621.jpg",
+      "ground_truth": "4A994"
+    },
+    {
+      "product_description": "4FE+2FE SC Single-mode Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2526S-AE/DS_EKI-2525M_2526M_S20150115170853.pdf",
+      "product_image": "data/EKI-2526S-AE/EKI-2526S_S20100901143733.jpg",
+      "ground_truth": "5A992.c"
+    },
+    {
+      "product_description": "8FE Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2528-BE/EKI-2525_I_2528_I_DS(110320)20201103184914.pdf",
+      "product_image": "data/EKI-2528-BE/EKI-2528_03_S20160518164927.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "8FE Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2528-C/EKI-2525_I_2528_I_DS(092723)20230928103744.pdf",
+      "product_image": "data/EKI-2528-C/EKI-252820230926142302.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "8FE Unmanaged Ethernet Switch -40~75\u2103 ",
+      "product_pdf": "data/EKI-2528I-BE/EKI-2525_I_2528_I_DS(110320)20201103184942.pdf",
+      "product_image": "data/EKI-2528I-BE/EKI-2528I_03_S20160518165334.png",
+      "ground_truth": "4A994"
+    },
+    {
+      "product_description": "8FE Slim-type Unmanaged Industrial Ethernet Switch with Low VAC Power Input, -40~75\u2103",
+      "product_pdf": "data/EKI-2528I-LA-AE/EKI-2528I-LA_DS(052719)20241021111145.pdf",
+      "product_image": "data/EKI-2528I-LA-AE/EKI-2528I-LA_02--20241021103834.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "8FE M12 Unmanaged Ethernet Switch, IP67 Rating",
+      "product_pdf": "data/EKI-2528I-M12-AE/EKI-2528I-M12_DS(071520)20200715142239.pdf",
+      "product_image": "data/EKI-2528I-M12-AE/EKI-2528I-M12_Front right _S20190621173105.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "Hardened Ethernet Extender, 1000Mbps, 60W",
+      "product_pdf": "data/EKI-2701MPI-R-AE/EKI-2701MPI-R_DS(10.12.18)20181026174717.pdf",
+      "product_image": "data/EKI-2701MPI-R-AE/EKI-2701MPI-R_Front right _S20181026174928.jpg",
+      "ground_truth": "5A991.b.1"
+    },
+    {
+      "product_description": "4FE PoE+1GE, Unmanaged Ethernet Switch, IEEE802.3af/at, 24~48VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-2705E-1GPI-A/EKI-2705G-1GPI_2705E-1GPI_DS(082624)20240826164212.pdf",
+      "product_image": "data/EKI-2705E-1GPI-A/EKI-2705E20221219161051.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "4GE PoE+1GE, Unmanaged Ethernet Switch, IEEE802.3af/at, 24~48VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-2705G-1GPI-A/EKI-2705G-1GPI_2705E-1GPI_DS(082624)20240826164151.pdf",
+      "product_image": "data/EKI-2705G-1GPI-A/EKI-2705G_0220221219160539.jpg",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "4FE PoE+1G+1G SFP, Unmanaged Ethernet Switch, IEEE802.3af/at, 24~48VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-2706E-1GFPI-BE/EKI-2706G-1GFPI-BE_2706E-1GFPI-BE_DS(082624)20240826164125.pdf",
+      "product_image": "data/EKI-2706E-1GFPI-BE/EKI-2706E_S20160920150419.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "4GE PoE+1G+1G SFP, Unmanaged Ethernet Switch, IEEE802.3af/at, 24~48VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-2706G-1GFPI-BE/EKI-2706G-1GFPI-BE_2706E-1GFPI-BE_DS(082624)20240826164101.pdf",
+      "product_image": "data/EKI-2706G-1GFPI-BE/EKI-2706G_S20160920152224.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "16GE+4SFP Port Gigabit Unmanaged Industrial Switch",
+      "product_pdf": "data/EKI-2720G-4F-AE/EKI-2720G-4F_4FI_DS(11.06.18)20190605150656.pdf",
+      "product_image": "data/EKI-2720G-4F-AE/EKI-2720G-4F-4FI_S20190508141027.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "16GE+4SFP Port Gigabit Unmanaged Industrial Switch",
+      "product_pdf": "data/EKI-2720G-4FI-AE/EKI-2720G-4F_4FI_DS(11.06.18)20190605150656.pdf",
+      "product_image": "data/EKI-2720G-4FI-AE/EKI-2720G-4F-4FI_S20190508141027.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "5GE Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2725-CE/EKI-2725_I_DS(082924)20240829164001.pdf",
+      "product_image": "data/EKI-2725-CE/EKI-2725I_S20161003171831.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "4GE+1G SFP Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2725F-AE/EKI-2725F_FI_DS(110320)20201103185231.pdf",
+      "product_image": "data/EKI-2725F-AE/EKI-2725F_B20170704213217.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "5GE Unmanaged Ethernet Switch,  -40~75\u2103",
+      "product_pdf": "data/EKI-2725I-CE/EKI-2725_I_DS(082924)20240829163932.pdf",
+      "product_image": "data/EKI-2725I-CE/EKI-2725I_S20161003173632.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "6GE+2G Multi-Mode Fiber Port Unmanaged Ethernet Switch",
+      "product_pdf": "data/EKI-2728M-BE/EKI-2728M_MI _ S_SI_DS(11.21.17)20171124155954.pdf",
+      "product_image": "data/EKI-2728M-BE/EKI-2728MI_B20171114102956.jpg",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "6GE+2G SC Multi-mode Unmanaged Ethernet Switch,  -40~75\u2103",
+      "product_pdf": "data/EKI-2728MI-BE/EKI-2728M_MI-_-S_SI_DS(112117)2017112416094120200212175644.pdf",
+      "product_image": "data/EKI-2728MI-BE/EKI-2728MI_Main20100827141218.jpg",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "Media Converter, 1000Mbps, SFP",
+      "product_pdf": "data/EKI-2741F-BE/EKI-2741F-BE_DS(10.18.17)20181121142215.pdf",
+      "product_image": "data/EKI-2741F-BE/EKI-2741F_B20200317195310.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "1GE PoE, SFP Injector ,IEEE802.3af/at,up to 60W, 48VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-2741FHPI-AE/EKI-2741FHPI_DS(12.22.17)20171225173911.pdf",
+      "product_image": "data/EKI-2741FHPI-AE/EKI-2741FPI_S20160811150930.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "Hardened Media Converter, 1000Mbps, SFP",
+      "product_pdf": "data/EKI-2741FI-BE/EKI-2741F-BE_DS(10.18.17)20181121142249.pdf",
+      "product_image": "data/EKI-2741FI-BE/EKI-2741FI_Banner20200326135457.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "Media Converter, 1000Mbps, Single mode 1310nm, 10km, SC",
+      "product_pdf": "data/EKI-2741LX-BE/EKI-2741F-BE_DS(10.18.17)20181121142352.pdf",
+      "product_image": "data/EKI-2741LX-BE/EKI-2741LX_P20240702174725.png",
+      "ground_truth": "5A991.b.1"
+    },
+    {
+      "product_description": "Media Converter, 1000Mbps, Multimode 850nm, SC",
+      "product_pdf": "data/EKI-2741SX-BE/EKI-2741F-BE_DS(10.18.17)20181121142320.pdf",
+      "product_image": "data/EKI-2741SX-BE/EKI-2741SX_Banner20200326135715.jpg",
+      "ground_truth": "5A991.b"
+    },
+    {
+      "product_description": "5FE Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5525I-AE/EKI-5525I20150714145223.pdf",
+      "product_image": "data/EKI-5525I-AE/EKI-5525I_S20140910115514.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "16FE Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5526I-AE/EKI-5526_I_DS(081621)20210823001401.pdf",
+      "product_image": "data/EKI-5526I-AE/EKI-5526I_S20141124144255.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "16FE Managed Ethernet Switch support PROFINET, -40~75\u2103",
+      "product_pdf": "data/EKI-5526I-PN-AE/EKI-5526_I-PN_5528_I-PN_DS(022123)20230221183554.pdf",
+      "product_image": "data/EKI-5526I-PN-AE/EKI-5526I-PN_S20161013161701.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "8FE Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5528I-AE/EKI-5528I20150714145225.pdf",
+      "product_image": "data/EKI-5528I-AE/EKI-5528I_S20140910163730.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "8FE Managed Ethernet Switch support PROFINET,-40~75\u2103",
+      "product_pdf": "data/EKI-5528I-PN-AE/EKI-5526_I-PN_5528_I-PN_DS(022123)20230221183723.pdf",
+      "product_image": "data/EKI-5528I-PN-AE/EKI-5528I-PN_S20161013095833.png",
+      "ground_truth": "5A991.b"
+    },
+    {
+      "product_description": "16FE+2G Combo Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5626CI-AE/EKI-5626CI_5629CI_DS(03.05.18)20180305175439.pdf",
+      "product_image": "data/EKI-5626CI-AE/EKI-5626C_03_S20150205164817.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "16FE+2G Combo Managed Ethernet Switch supportEtherNet/IP, -40~75\u2103",
+      "product_pdf": "data/EKI-5626CI-EI-AE/EKI-5626CI-MB-Series_DS(031521)20210504130824.PDF",
+      "product_image": "data/EKI-5626CI-EI-AE/EKI-5626CI-EI_S20161014074853.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "16FE+2G Combo Managed Ethernet Switch support Modbus/TCP, -40~75\u2103",
+      "product_pdf": "data/EKI-5626CI-MB-AE/EKI-5626CI-MB-Series_DS(031521)20210504130824.PDF",
+      "product_image": "data/EKI-5626CI-MB-AE/EKI-5626CI-MB_S20161017144515.png",
+      "ground_truth": "EAR99"
+    },
+    {
+      "product_description": "8FE+2G Combo Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5629CI-AE/EKI-5626CI_5629CI_DS(03.05.18)20180305175341.pdf",
+      "product_image": "data/EKI-5629CI-AE/EKI-5629CI_03_S20150204173419.png",
+      "ground_truth": "5A991.b"
+    },
+    {
+      "product_description": "16 port Gigabit Ethernet Switch",
+      "product_pdf": "data/EKI-5726I-AE/EKI-5726NI-A_DS(041724)20240418170505.pdf",
+      "product_image": "data/EKI-5726I-AE/EKI-5726NI_02--20240207113236.png",
+      "ground_truth": "4A994"
+    },
+    {
+      "product_description": "8GE Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5728/EKI-5725_I_5728_I_DS(082120)20200829165056.pdf",
+      "product_image": "data/EKI-5728/EKI-5728I_S20140910174222.png",
+      "ground_truth": "5A991"
+    },
+    {
+      "product_description": "8GE+2G SFP Unmanaged Ethernet Switch, ATEX/C1D2, -40~75\u2103",
+      "product_pdf": "data/EKI-5729FI-AE/EKI-5729F_FI_DS(082120)20200829165142.pdf",
+      "product_image": "data/EKI-5729FI-AE/EKI-5729FI_S20141124155609.png",
+      "ground_truth": "5A002"
+    },
+    {
+      "product_description": "8-Port + 2 SFP Entry-Level Managed Switch",
+      "product_pdf": "data/EKI-5729FI-MB-AE/EKI-5729FI-MB_DS(081921)20210917164354.pdf",
+      "product_image": "data/EKI-5729FI-MB-AE/EKI-5729FI-MB_820x46020210917164342.jpg",
+      "ground_truth": "5A992.c"
+    },
+    {
+      "product_description": "8GE PoE and 2G Unmanaged Ethernet Switch, IEEE802.3af/at, E-Mark, 12V~24VDC, -40~75\u2103",
+      "product_pdf": "data/EKI-5729PI-AE/EKI-5729P_PI_DS(11.13.18)20181121142646.pdf",
+      "product_image": "data/EKI-5729PI-AE/EKI-5729PI_S20160530100536.png",
+      "ground_truth": "4A994"
+    }
+  ]
+}
