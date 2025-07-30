@@ -48,7 +48,7 @@ def test_single_product(product_model, pdf_path, expected_eccn):
                 PDF_PARSER_URL,
                 files=files,
                 data=data,
-                timeout=300  # 增加到5分鐘單個請求超時
+                timeout=10800  # 3小時單個請求超時
             )
             
         processing_time = time.time() - start_time

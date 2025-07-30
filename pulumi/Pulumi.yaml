@@ -96,6 +96,19 @@ resources:
       compatibleArchitectures:
         - x86_64
 
+  # Numpy Layer for Cosine Similarity calculations
+  numpyLayer:
+    type: aws:lambda:LayerVersion
+    properties:
+      layerName: ${stackName}-numpy-layer
+      description: NumPy for scientific computing and cosine similarity
+      code:
+        fn::fileArchive: numpy_layer.zip
+      compatibleRuntimes:
+        - python3.10
+      compatibleArchitectures:
+        - x86_64
+
 
   # PDF Parser Lambda Function
   pdfParserLambda:
@@ -147,6 +160,7 @@ resources:
       layers:
         - ${mainLayer.arn}
         - ${bs4Layer.arn}
+        - ${numpyLayer.arn}
       environment:
         variables:
           LOG_LEVEL: INFO
@@ -158,12 +172,13 @@ resources:
           PIPELINE_STEP: "2"
           PIPELINE_ROLE: "MAIN_CLASSIFIER"
           SYSTEM_PROMPT_SOURCE: "prompts.py"
-          MOUSER_API_KEY: "0b82bbb0-3088-4d5c-baa1-f6997f0dcaf7"
+          MOUSER_API_KEY: "773b916e-0f6c-4a86-a896-b3b435be5389"
           TOOLS_ENABLED: "true"
     options:
       dependsOn:
         - ${mainLayer}
         - ${bs4Layer}
+        - ${numpyLayer}
         - ${dataBucket}
         - ${uploadEmbeddings}
 

@@ -1,0 +1,453 @@
+{
+  "timestamp": "2025-07-30T12:28:06.512576",
+  "total_tests": 54,
+  "correct_count": 48,
+  "accuracy_rate": 88.88888888888889,
+  "mouser_direct_count": 39,
+  "mouser_usage_rate": 72.22222222222221,
+  "total_time": 935.3329994678497,
+  "method_stats": {
+    "mouser_api_direct": {
+      "total": 39,
+      "correct": 37
+    },
+    "complete_pipeline": {
+      "total": 15,
+      "correct": 11
+    }
+  },
+  "detailed_results": [
+    {
+      "product_model": "EKI-2525LI-AE",
+      "expected_eccn": "5A991.b.1",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 4.2375805377960205,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5528I-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 6.094119548797607,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5729FI-MB-AE",
+      "expected_eccn": "5A992.c",
+      "predicted_eccn": "5A992.c",
+      "method": "complete_pipeline",
+      "processing_time": 43.646095752716064,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525MI-ST-BE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 3.4518020153045654,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525MI-BE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.187725067138672,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525S-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 3.566636562347412,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2728MI-BE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.6805408000946045,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2741F-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 2.2793118953704834,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-5525I-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 6.375608205795288,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2741LX-BE",
+      "expected_eccn": "5A991.b.1",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 3.6215789318084717,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2528I-BE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 3.683285713195801,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2705G-1GPI-A",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 44.42161679267883,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2528I-LA-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 43.58684992790222,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5729FI-AE",
+      "expected_eccn": "5A002",
+      "predicted_eccn": "5A002",
+      "method": "mouser_api_direct",
+      "processing_time": 4.4771857261657715,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2720G-4FI-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.9275474548339844,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2528-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 3.7022833824157715,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2526S-AE",
+      "expected_eccn": "5A992.c",
+      "predicted_eccn": "5A992.c",
+      "method": "mouser_api_direct",
+      "processing_time": 6.8340442180633545,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2741FHPI-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 3.832195520401001,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525M-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 3.43711256980896,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2528-C",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 41.862711668014526,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2428G-4CA-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 42.23330760002136,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525-BE",
+      "expected_eccn": "5A991.b",
+      "predicted_eccn": "5A991.b",
+      "method": "mouser_api_direct",
+      "processing_time": 2.5421788692474365,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525I-BE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.8311307430267334,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2525I-LA-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 41.033427000045776,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2526M-AE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 6.915599822998047,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2528I-M12-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 65.58413982391357,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2701MPI-R-AE",
+      "expected_eccn": "5A991.b.1",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 4.396945476531982,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2705E-1GPI-A",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 41.1823034286499,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2706E-1GFPI-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 44.708210706710815,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2706G-1GFPI-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 45.327314615249634,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2720G-4F-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 5.516841888427734,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2725-CE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.7493550777435303,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2725F-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.7101798057556152,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2725I-CE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.681896448135376,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2728M-BE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 47.729491233825684,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-2741FI-BE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.643019199371338,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2741SX-BE",
+      "expected_eccn": "5A991.b",
+      "predicted_eccn": "5A991.b",
+      "method": "mouser_api_direct",
+      "processing_time": 3.5117995738983154,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5526I-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 3.85479736328125,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5526I-PN-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991.b",
+      "method": "complete_pipeline",
+      "processing_time": 51.31349539756775,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-5528I-PN-AE",
+      "expected_eccn": "5A991.b",
+      "predicted_eccn": "5A991.b",
+      "method": "mouser_api_direct",
+      "processing_time": 11.789610385894775,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5626CI-AE",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991",
+      "method": "mouser_api_direct",
+      "processing_time": 10.25352430343628,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5629CI-AE",
+      "expected_eccn": "5A991.b",
+      "predicted_eccn": "5A991.b",
+      "method": "mouser_api_direct",
+      "processing_time": 8.748393774032593,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5726I-AE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 10.239084482192993,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5728",
+      "expected_eccn": "5A991",
+      "predicted_eccn": "5A991.b.1",
+      "method": "complete_pipeline",
+      "processing_time": 55.35181784629822,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-5729PI-AE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 4.505681753158569,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2541M-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 3.8091177940368652,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-2541S-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "complete_pipeline",
+      "processing_time": 37.32821607589722,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2541SI-BE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "5A991",
+      "method": "complete_pipeline",
+      "processing_time": 44.265424489974976,
+      "is_correct": false
+    },
+    {
+      "product_model": "EKI-2701HPI-AE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 3.042093276977539,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2701PSI-AE",
+      "expected_eccn": "4A994",
+      "predicted_eccn": "4A994",
+      "method": "mouser_api_direct",
+      "processing_time": 1.829540729522705,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2728-D",
+      "expected_eccn": "5A991.b",
+      "predicted_eccn": "5A991.b",
+      "method": "mouser_api_direct",
+      "processing_time": 3.822976589202881,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-2728I-D",
+      "expected_eccn": "5A991.b.1",
+      "predicted_eccn": "5A991.b.1",
+      "method": "mouser_api_direct",
+      "processing_time": 3.47265362739563,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5626CI-EI-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 9.545291662216187,
+      "is_correct": true
+    },
+    {
+      "product_model": "EKI-5626CI-MB-AE",
+      "expected_eccn": "EAR99",
+      "predicted_eccn": "EAR99",
+      "method": "mouser_api_direct",
+      "processing_time": 8.87904143333435,
+      "is_correct": true
+    }
+  ]
+}

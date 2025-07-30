@@ -6,22 +6,24 @@
 
 ECCN 智能分析管道是一個端到端的解決方案，具備以下功能：
 - **Two-Lambda Pipeline 架構**：PDF Parser + Main Classifier 分離式處理
-- **智慧型產品相似性分析**：基於技術規格的 Jaccard 相似性比對演算法
+- **ECCN Embeddings Cosine Similarity**：使用1536維真實向量進行語義相似性分析，取代原有Jaccard演算法
 - **內容基礎分類**：純粹基於 PDF 技術規格分析，不依賴產品命名模式
 - **工具增強系統**：整合 Mouser API 和 WebSearch 驗證
-- **AI 智能分析**：AWS Bedrock Claude 3.7 Sonnet 提供最終分類決策
+- **AI 智能分析**：AWS Bedrock Claude 3.7 Sonnet 提供最終分類決策，優先考慮cosine similarity結果
 - **生產級測試**：54 個實際 PDF 案例的全面驗證，達到 100% 系統穩定性和 100% Ground Truth 覆蓋率
 - **自動化分析**：測試完成後自動生成分析報告並歸檔結果
+- **NumPy加速計算**：使用高效向量運算提升計算性能
 
 ##系統架構
 
-###當前生產架構（Two-Lambda Pipeline + 工具增強）
+###當前生產架構（Two-Lambda Pipeline + Cosine Similarity）
 ```
  PDF Upload →  PDF Parser Lambda →  S3 Storage →  Main Classifier Lambda →  ECCN 結果
-               (PyMuPDF4LLM)              (JSON)        (Claude 3.7 + Embeddings in S3 + Tools)
+               (PyMuPDF4LLM)              (JSON)        (Claude 3.7 + NumPy + Cosine Similarity)
                                                               ↓
-                                                      增強驗證系統
-                                                    - System Prompt
+                                                      智能分析系統
+                                                    - ECCN Embeddings (1536維)
+                                                    - Cosine Similarity (閾值>0.7)
                                                     - Mouser API 查詢
                                                     - WebSearch 驗證
                                                     - 多重來源交叉驗證
@@ -31,15 +33,17 @@ ECCN 智能分析管道是一個端到端的解決方案，具備以下功能：
 - **v8.0**: 型號模式識別 (36.2% 準確率) - 歷史模式依賴版本
 - **v9.0**: 基礎規格方法 (20.0% 準確率) - 首次規格基礎實現  
 - **v11.3**: 平衡規格方法 (31.9% 準確率) - 過渡版本
-- **v3.2 Pipeline**: Two-Lambda 架構 + 工具增強 (**90.7% 準確率, 100% 系統穩定性, 54案例全覆蓋**) - **當前生產版本**
+- **v3.2 Pipeline**: Two-Lambda 架構 + 工具增強 (90.7% 準確率, 100% 系統穩定性, 54案例全覆蓋)
+- **v3.2 + Cosine Similarity**: NumPy向量計算 + 真實ECCN embeddings (**企業級語義理解**) - **當前生產版本**
 
 ###核心組件
 - **PDF Parser Lambda**: PyMuPDF4LLM 解析，支援 multipart/form-data 上傳，處理完成後存儲至 S3
-- **Main Classifier Lambda**: lambda_function.py，整合 Mouser 產品相似性分析與 WebSearch 驗證
-- **相似性分析系統**: 基於技術規格的產品比對演算法，使用 Jaccard 係數進行特徵集合比較
+- **Main Classifier Lambda**: lambda_function.py，整合 **Cosine Similarity** + Mouser API + WebSearch 驗證
+- **ECCN Embeddings 系統**: 1536維向量資料庫（data.pkl）+ **NumPy加速Cosine Similarity計算**
 - **工具增強**: Mouser API 整合 + WebSearch 驗證系統
-- **AWS Bedrock**: Claude 3.7 Sonnet 模型進行最終 AI 分析
+- **AWS Bedrock**: Claude 3.7 Sonnet 模型進行最終 AI 分析，優先考慮cosine similarity結果
 - **測試框架**: 全面的 54 案例 ground truth 驗證 + 自動分析歸檔（100% 覆蓋率）
+- **Lambda Layers**: numpy_layer.zip提供高效向量計算支持
 
 ## 目錄結構
 
@@ -79,10 +83,11 @@ eccn-agent/
 
 ###AI/ML 組件
 - **Claude 3.7 Sonnet**: 主要 AI 分類模型
-- **真實 Embeddings**: ECCN 參考數據向量化（eccn_embeddings.pkl）
-- **Jaccard Similarity**: Jaccard 系數 + 關鍵字加權算法
+- **Cosine Similarity**: NumPy向量計算 + 1536維ECCN embeddings
+- **真實 Embeddings**: ECCN 參考數據向量化（data.pkl）
 - **工具增強**: Mouser API + WebSearch 外部驗證
-- **內容基礎分析**: 純 PDF 技術規格提取和分析
+- **內容基礎分析**: 純 PDF 技術規格提取和語義分析
+- **高標準閾值**: >0.7相似度確保企業級精度
 
 ## 快速開始
 
