@@ -13,6 +13,9 @@ variables:
   stackName: eccn-two-lambda-pipeline
   awsRegion: us-east-1
   accountId: "654654199195"
+  # 從 .env 文件讀取 AWS 憑證
+  awsAccessKeyId: ${CUSTOM_AWS_ACCESS_KEY_ID}
+  awsSecretAccessKey: ${CUSTOM_AWS_SECRET_ACCESS_KEY}
 
 resources:
   # S3 Bucket for data storage
@@ -174,6 +177,8 @@ resources:
           SYSTEM_PROMPT_SOURCE: "prompts.py"
           MOUSER_API_KEY: "773b916e-0f6c-4a86-a896-b3b435be5389"
           TOOLS_ENABLED: "true"
+          CUSTOM_AWS_ACCESS_KEY_ID: ${awsAccessKeyId}
+          CUSTOM_AWS_SECRET_ACCESS_KEY: ${awsSecretAccessKey}
     options:
       dependsOn:
         - ${mainLayer}
