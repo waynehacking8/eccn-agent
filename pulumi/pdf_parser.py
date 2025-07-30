@@ -195,7 +195,7 @@ def lambda_handler(event, context):
                 ContentType='application/json'
             )
             
-            # 🎯 關鍵步驟：自動呼叫 Main Classifier，傳入完整的PDF內容和產品型號
+            #  關鍵步驟：自動呼叫 Main Classifier，傳入完整的PDF內容和產品型號
             if product_model and REQUESTS_AVAILABLE:
                 classification_result = call_main_classifier(s3_key, product_model)
                 
@@ -214,7 +214,7 @@ def lambda_handler(event, context):
                             },
                             'eccn_classification': classification_result.get('classification', {}),
                             'data_source_details': classification_result.get('classification', {}).get('data_source_details', {}),
-                            'message': f'✅ Complete pipeline: PDF → ECCN classification for {product_model}'
+                            'message': f' Complete pipeline: PDF → ECCN classification for {product_model}'
                         }),
                         'headers': {
                             'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ def lambda_handler(event, context):
                                 'product_model_detected': product_model
                             },
                             'eccn_classification_error': classification_result.get('error'),
-                            'message': f'⚠️ PDF parsed successfully but ECCN classification failed for {product_model}'
+                            'message': f' PDF parsed successfully but ECCN classification failed for {product_model}'
                         }),
                         'headers': {
                             'Content-Type': 'application/json',

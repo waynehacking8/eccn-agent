@@ -831,7 +831,7 @@ class PDFDocument:
                 x.append(kwd)
             if len(x) >= 2:
                 objid1 = x[-2]
-        # #### end hack around malformed pdf files
+        # ####end hack around malformed pdf files
         if objid1 != objid:
             raise PDFSyntaxError("objid mismatch: {!r}={!r}".format(objid1, objid))
 

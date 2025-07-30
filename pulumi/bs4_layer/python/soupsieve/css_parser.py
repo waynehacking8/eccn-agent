@@ -1115,7 +1115,7 @@ class CSSParser:
         end = (m.start(0) - 1) if m else (len(pattern) - 1)
 
         if self.debug:  # pragma: no cover
-            print(f'## PARSING: {pattern!r}')
+            print(f'##PARSING: {pattern!r}')
         while index <= end:
             m = None
             for v in self.css_tokens:
@@ -1144,7 +1144,7 @@ class CSSParser:
                     msg = f"Invalid character {c!r} position {index}"
                 raise SelectorSyntaxError(msg, self.pattern, index)
         if self.debug:  # pragma: no cover
-            print('## END PARSING')
+            print('##END PARSING')
 
     def process_selectors(self, index: int = 0, flags: int = 0) -> ct.SelectorList:
         """Process selectors."""

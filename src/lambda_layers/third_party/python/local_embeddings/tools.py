@@ -22,9 +22,9 @@ print("Loading local ECCN embeddings...")
 try:
     # Initialize the local search functions by calling them once
     local_get_unique_categories()
-    print(" Local ECCN embeddings loaded successfully")
+    print("Local ECCN embeddings loaded successfully")
 except Exception as e:
-    print(f" Error loading local ECCN embeddings: {e}")
+    print(f"Error loading local ECCN embeddings: {e}")
     print("Please ensure the embeddings pickle file exists at /home/wayneleo8/eccn-agent/src/sagemaker/eccn_embeddings.pkl")
 
 def semantic_search(query_text: str, size: int = 5, eccn_category: Optional[str] = None) -> Dict[str, Any]:
@@ -308,22 +308,22 @@ if __name__ == "__main__":
     # Test semantic search
     try:
         results = semantic_search("encryption software", size=3)
-        print(f" Semantic search: {len(results['results'])} results found")
+        print(f"Semantic search: {len(results['results'])} results found")
     except Exception as e:
-        print(f" Semantic search error: {e}")
+        print(f"Semantic search error: {e}")
     
     # Test ECCN lookup
     try:
         results = find_eccn_info_by_eccn_code("5A002")
-        print(f" ECCN lookup: {len(results['results'])} results found")
+        print(f"ECCN lookup: {len(results['results'])} results found")
     except Exception as e:
-        print(f" ECCN lookup error: {e}")
+        print(f"ECCN lookup error: {e}")
     
     # Test categories
     try:
         results = get_unique_categories()
-        print(f" Categories: {results['total_categories']} categories found")
+        print(f"Categories: {results['total_categories']} categories found")
     except Exception as e:
-        print(f" Categories error: {e}")
+        print(f"Categories error: {e}")
     
     print("Local ECCN search functions test completed!")

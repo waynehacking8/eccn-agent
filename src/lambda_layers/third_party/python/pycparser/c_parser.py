@@ -481,7 +481,7 @@ class CParser(PLYParser):
             return c_ast.Union
 
     ##
-    ## Precedence and associativity of operators
+    ##Precedence and associativity of operators
     ##
     # If this changes, c_generator.CGenerator.precedence_map needs to change as
     # well
@@ -499,8 +499,8 @@ class CParser(PLYParser):
     )
 
     ##
-    ## Grammar productions
-    ## Implementation of the BNF defined in K&R2 A.13
+    ##Grammar productions
+    ##Implementation of the BNF defined in K&R2 A.13
     ##
 
     # Wrapper around a translation unit, to allow for empty input.

@@ -65,7 +65,7 @@ class ECCNToolEnhancer:
         使用Mouser API查詢產品的官方ECCN分類
         """
         try:
-            self.logger.info(f" Mouser API查詢: {product_model}")
+            self.logger.info(f"Mouser API查詢: {product_model}")
             
             # Mouser API搜尋端點 (修正為v1.0格式)
             url = f"https://api.mouser.com/api/v1.0/search/keyword?apiKey={self.mouser_api_key}"
@@ -86,7 +86,7 @@ class ECCNToolEnhancer:
             ]
             
             for search_keyword in search_strategies:
-                self.logger.info(f"🔍 嘗試搜尋: {search_keyword}")
+                self.logger.info(f"嘗試搜尋: {search_keyword}")
                 
                 payload = {
                     "SearchByKeywordRequest": {
@@ -106,18 +106,18 @@ class ECCNToolEnhancer:
                 )
                 
                 if response.status_code != 200:
-                    self.logger.warning(f"⚠️ Mouser API請求失敗: {response.status_code} - {search_keyword}")
+                    self.logger.warning(f"Mouser API請求失敗: {response.status_code} - {search_keyword}")
                     continue
                     
                 try:
                     data = response.json()
                     parts = data.get('SearchResults', {}).get('Parts', [])
-                    self.logger.info(f"📊 Mouser API響應: {search_keyword} - {len(parts)} 個結果")
+                    self.logger.info(f"Mouser API響應: {search_keyword} - {len(parts)} 個結果")
                 except Exception as json_error:
-                    self.logger.error(f"❌ Mouser API JSON解析失敗: {search_keyword} - {str(json_error)}")
+                    self.logger.error(f"Mouser API JSON解析失敗: {search_keyword} - {str(json_error)}")
                     continue
                 
-                self.logger.info(f"📊 搜尋 '{search_keyword}' 找到 {len(parts)} 個產品")
+                self.logger.info(f"搜尋 '{search_keyword}' 找到 {len(parts)} 個產品")
                 
                 # 檢查每個找到的產品
                 for part in parts:
@@ -129,20 +129,20 @@ class ECCNToolEnhancer:
                     compliance = part.get('ProductCompliance', [])
                     legacy_eccn = part.get('ExportControlClassificationNumber', '')
                     
-                    self.logger.info(f"🔍 檢查產品: {part_number} ({manufacturer})")
-                    self.logger.info(f"📋 ProductCompliance: {compliance}")
-                    self.logger.info(f"📋 Legacy ECCN: '{legacy_eccn}'")
+                    self.logger.info(f"檢查產品: {part_number} ({manufacturer})")
+                    self.logger.info(f"ProductCompliance: {compliance}")
+                    self.logger.info(f"Legacy ECCN: '{legacy_eccn}'")
                     
                     # 使用改進的匹配邏輯
                     if self._is_related_product(part_number, description, product_model, manufacturer):
-                        self.logger.info(f"🔍 初步匹配產品: {part_number}")
+                        self.logger.info(f"初步匹配產品: {part_number}")
                         
                         # **新增規格校對步驟**
                         if not self._verify_product_specifications(part, product_model, description):
-                            self.logger.info(f"⚠️ 規格校對不符，跳過: {part_number}")
+                            self.logger.info(f"規格校對不符，跳過: {part_number}")
                             continue
                             
-                        self.logger.info(f"✅ 規格校對通過: {part_number}")
+                        self.logger.info(f"規格校對通過: {part_number}")
                         
                         # 1. 檢查ProductCompliance中的ECCN (優先)
                         compliance = part.get('ProductCompliance', [])
@@ -152,7 +152,7 @@ class ECCNToolEnhancer:
                                 # 更嚴格的ECCN驗證 - 必須是有效的ECCN格式
                                 if eccn and eccn not in ['N/A', 'Not Available', '', 'TBD', 'null', 'NULL', '-', '—'] and self._is_valid_eccn_format(eccn):
                                     eccn = self._normalize_eccn_format(eccn)
-                                    self.logger.info(f"✅ Mouser找到有效ECCN: {eccn} (搜尋詞: {search_keyword})")
+                                    self.logger.info(f"Mouser找到有效ECCN: {eccn} (搜尋詞: {search_keyword})")
                                     return {
                                         'source': 'mouser_api_direct',
                                         'eccn_code': eccn,
@@ -165,13 +165,13 @@ class ECCNToolEnhancer:
                                         'reasoning': f'Mouser API直接查詢 "{search_keyword}" 找到產品 {part_number}: {eccn}'
                                     }
                                 else:
-                                    self.logger.info(f"❌ Mouser ECCN無效或為空: '{eccn}' (產品: {part_number})")
+                                    self.logger.info(f"Mouser ECCN無效或為空: '{eccn}' (產品: {part_number})")
                         
                         # 2. 備用：檢查舊格式的ECCN欄位
                         eccn = part.get('ExportControlClassificationNumber', '').strip()
                         if eccn and eccn not in ['N/A', 'Not Available', '', 'TBD', 'null', 'NULL', '-', '—'] and self._is_valid_eccn_format(eccn):
                             eccn = self._normalize_eccn_format(eccn)
-                            self.logger.info(f"✅ Mouser找到有效ECCN (Legacy): {eccn} (搜尋詞: {search_keyword})")
+                            self.logger.info(f"Mouser找到有效ECCN (Legacy): {eccn} (搜尋詞: {search_keyword})")
                             return {
                                 'source': 'mouser_api_direct',
                                 'eccn_code': eccn,
@@ -184,14 +184,14 @@ class ECCNToolEnhancer:
                                 'reasoning': f'Mouser API直接查詢 "{search_keyword}" 找到產品 {part_number}: {eccn}'
                             }
                         else:
-                            self.logger.info(f"❌ Mouser Legacy ECCN無效或為空: '{eccn}' (產品: {part_number})")
+                            self.logger.info(f"Mouser Legacy ECCN無效或為空: '{eccn}' (產品: {part_number})")
             
             # 所有搜尋策略都沒找到
-            self.logger.warning(f"⚠️ Mouser所有搜尋策略都未找到ECCN: {search_strategies}")
+            self.logger.warning(f"Mouser所有搜尋策略都未找到ECCN: {search_strategies}")
             return None
                 
         except Exception as e:
-            self.logger.error(f" Mouser API例外: {str(e)}")
+            self.logger.error(f"Mouser API例外: {str(e)}")
             return None
 
     def search_web_eccn_references(self, product_model: str, product_description: str = "") -> List[Dict]:
@@ -199,7 +199,7 @@ class ECCNToolEnhancer:
         使用WebSearch查詢ECCN相關資訊
         """
         try:
-            self.logger.info(f" WebSearch查詢: {product_model}")
+            self.logger.info(f"WebSearch查詢: {product_model}")
             
             # 構建搜索查詢
             search_queries = [
@@ -226,11 +226,11 @@ class ECCNToolEnhancer:
             # 分析搜索結果中的ECCN模式
             eccn_matches = self._extract_eccn_from_search_results(results)
             
-            self.logger.info(f" WebSearch找到{len(eccn_matches)}個ECCN參考")
+            self.logger.info(f"WebSearch找到{len(eccn_matches)}個ECCN參考")
             return eccn_matches
             
         except Exception as e:
-            self.logger.error(f" WebSearch例外: {str(e)}")
+            self.logger.error(f"WebSearch例外: {str(e)}")
             return []
 
     def _perform_web_search(self, query: str) -> List[Dict]:
@@ -290,7 +290,7 @@ class ECCNToolEnhancer:
         """
         交叉參考多個來源的ECCN資訊
         """
-        self.logger.info(f" 開始交叉參考: {product_model}")
+        self.logger.info(f"開始交叉參考: {product_model}")
         
         sources = {}
         
@@ -309,14 +309,14 @@ class ECCNToolEnhancer:
                 
                 if web_results:
                     sources['websearch'] = web_results[:5]  # 限制數量
-                    self.logger.info(f"✅ WebSearch找到 {len(web_results)} 個結果")
+                    self.logger.info(f"WebSearch找到 {len(web_results)} 個結果")
                 else:
                     # 備用：使用原始搜索
                     web_results = self.search_web_eccn_references(product_model, pdf_content)
                     if web_results:
                         sources['websearch'] = web_results
             except Exception as e:
-                self.logger.warning(f"⚠️ 增強型WebSearch失敗，使用備用搜索: {str(e)}")
+                self.logger.warning(f"增強型WebSearch失敗，使用備用搜索: {str(e)}")
                 # 備用：使用原始搜索
                 web_results = self.search_web_eccn_references(product_model, pdf_content)
                 if web_results:
@@ -330,7 +330,7 @@ class ECCNToolEnhancer:
         # 4. 綜合分析
         final_recommendation = self._synthesize_eccn_sources(sources, product_model)
         
-        self.logger.info(f" 交叉參考完成: {final_recommendation.get('eccn_code', 'Unknown')}")
+        self.logger.info(f"交叉參考完成: {final_recommendation.get('eccn_code', 'Unknown')}")
         return final_recommendation
 
     def _analyze_technical_features(self, pdf_content: str) -> Dict:
@@ -523,7 +523,7 @@ class ECCNToolEnhancer:
             
             # 基本檢查：製造商必須是Advantech
             if 'advantech' not in manufacturer:
-                self.logger.info(f"❌ 製造商不匹配: {manufacturer}")
+                self.logger.info(f"製造商不匹配: {manufacturer}")
                 return False
             
             # **精確產品匹配** - 避免EKI-5728匹配到EKI-5728I-AE
@@ -536,12 +536,12 @@ class ECCNToolEnhancer:
             
             # 精確匹配：必須完全相同
             if target_clean == part_core:
-                self.logger.info(f"✅ 精確產品匹配: {target_model} = {part_number}")
+                self.logger.info(f"精確產品匹配: {target_model} = {part_number}")
                 return True
             elif part_core.startswith(target_clean) and len(part_core) > len(target_clean):
                 # **功能性差異檢測** - 檢測I、MI、LI等功能代碼差異
                 suffix = part_core[len(target_clean):]
-                self.logger.info(f"🔍 發現可能變體: {target_model} → {part_number} (後綴: {suffix})")
+                self.logger.info(f"發現可能變體: {target_model} → {part_number} (後綴: {suffix})")
                 
                 # 檢測功能性後綴 (I=Industrial, MI=Managed Industrial, LI=Layer2 Industrial等)
                 functional_suffixes = ['I', 'MI', 'LI', 'SI', 'FI', 'GI', 'CI', 'PI', 'S', 'M', 'G', 'F', 'C', 'P']
@@ -550,25 +550,25 @@ class ECCNToolEnhancer:
                 # 首先檢查地理區域差異 (AU, US等)
                 for geo_suffix in geographic_suffixes:
                     if suffix == geo_suffix or suffix.startswith(geo_suffix + '-') or suffix.endswith('-' + geo_suffix):
-                        self.logger.info(f"❌ 檢測到地理區域差異: {target_model} vs {part_number}")
-                        self.logger.info(f"   - 目標產品: {target_model}")
-                        self.logger.info(f"   - Mouser產品: {part_number} (區域: {geo_suffix})")
-                        self.logger.info(f"   - 後綴分析: '{suffix}' 匹配區域代碼 '{geo_suffix}'")
+                        self.logger.info(f"檢測到地理區域差異: {target_model} vs {part_number}")
+                        self.logger.info(f"  - 目標產品: {target_model}")
+                        self.logger.info(f"  - Mouser產品: {part_number} (區域: {geo_suffix})")
+                        self.logger.info(f"  - 後綴分析: '{suffix}' 匹配區域代碼 '{geo_suffix}'")
                         return False
                 
                 # 再檢查功能性差異
                 for func_suffix in functional_suffixes:
                     if suffix.startswith(func_suffix):
-                        self.logger.info(f"❌ 檢測到功能性差異: {target_model} vs {part_number}")
-                        self.logger.info(f"   - 目標產品: {target_model} (基本型)")
-                        self.logger.info(f"   - Mouser產品: {part_number} (功能: {func_suffix})")
+                        self.logger.info(f"檢測到功能性差異: {target_model} vs {part_number}")
+                        self.logger.info(f"  - 目標產品: {target_model} (基本型)")
+                        self.logger.info(f"  - Mouser產品: {part_number} (功能: {func_suffix})")
                         return False
                 
                 # 非功能性後綴，允許通過
-                self.logger.info(f"✅ 允許變體進入規格校對: {part_number}")
+                self.logger.info(f"允許變體進入規格校對: {part_number}")
                 return True
             else:
-                self.logger.info(f"❌ 產品型號不匹配: {target_model} vs {part_number}")
+                self.logger.info(f"產品型號不匹配: {target_model} vs {part_number}")
             
             # 系列檢查
             target_series = self._extract_product_series(target_model)
@@ -576,14 +576,14 @@ class ECCNToolEnhancer:
             
             if target_series and part_series and target_series != part_series:
                 if not (target_series in part_series or part_series in target_series):
-                    self.logger.info(f"❌ 產品系列差異過大: {target_series} vs {part_series}")
+                    self.logger.info(f"產品系列差異過大: {target_series} vs {part_series}")
                     return False
                 
-            self.logger.info(f"✅ 規格校對通過: {part_number}")
+            self.logger.info(f"規格校對通過: {part_number}")
             return True
             
         except Exception as e:
-            self.logger.warning(f"⚠️ 規格校對異常，允許通過: {str(e)}")
+            self.logger.warning(f"規格校對異常，允許通過: {str(e)}")
             return True  # 異常時允許通過
     
     def _extract_product_series(self, model: str) -> str:
@@ -625,7 +625,7 @@ class ECCNToolEnhancer:
         
         # 完全匹配是最理想的
         if target_region == part_region:
-            self.logger.info(f"✅ 地區代碼完全匹配: {target_region}")
+            self.logger.info(f"地區代碼完全匹配: {target_region}")
             return True
         
         # 檢查是否是不兼容的地區代碼 - 更智能的檢查
@@ -639,24 +639,24 @@ class ECCNToolEnhancer:
             
             for pair in conflicting_pairs:
                 if (target_region, part_region) == pair:
-                    self.logger.info(f"❌ 地區代碼衝突: {target_region} vs {part_region}")
+                    self.logger.info(f"地區代碼衝突: {target_region} vs {part_region}")
                     return False
             
             # 對於其他地區代碼差異，給予更多寬容
             # 例如 -AE vs -02A1E 可能是同一產品的不同版本
             if len(target_region) <= 2 and len(part_region) > 3:
-                self.logger.info(f"ℹ️ 地區代碼版本差異: {target_region} vs {part_region} (允許)")
+                self.logger.info(f"地區代碼版本差異: {target_region} vs {part_region} (允許)")
                 return True
             elif len(part_region) <= 2 and len(target_region) > 3:
-                self.logger.info(f"ℹ️ 地區代碼版本差異: {target_region} vs {part_region} (允許)")
+                self.logger.info(f"地區代碼版本差異: {target_region} vs {part_region} (允許)")
                 return True
             
             # 其他不明確的差異給予警告但允許通過
-            self.logger.info(f"⚠️ 地區代碼差異: {target_region} vs {part_region} (允許但需注意)")
+            self.logger.info(f"地區代碼差異: {target_region} vs {part_region} (允許但需注意)")
             return True
         
         # 如果一個有地區代碼，一個沒有，允許通過
-        self.logger.info(f"ℹ️ 地區代碼差異: {target_region} vs {part_region} (允許)")
+        self.logger.info(f"地區代碼差異: {target_region} vs {part_region} (允許)")
         return True
     
     def _extract_region_code(self, model: str) -> str:
@@ -680,7 +680,7 @@ class ECCNToolEnhancer:
         part_has_m12 = 'M12' in part_upper or 'm12' in desc_lower
         
         if target_has_m12 != part_has_m12:
-            self.logger.info(f"⚠️ M12連接器差異: target={target_has_m12}, part={part_has_m12} (允許)")
+            self.logger.info(f"M12連接器差異: target={target_has_m12}, part={part_has_m12} (允許)")
             # 改為警告而非拒絕，因為描述可能不完整
             # return True 表示不拒絕
         
@@ -690,7 +690,7 @@ class ECCNToolEnhancer:
         part_has_fiber = any(ind in part_upper for ind in fiber_indicators) or 'fiber' in desc_lower
         
         if target_has_fiber != part_has_fiber:
-            self.logger.info(f"⚠️ 光纖連接器差異: target={target_has_fiber}, part={part_has_fiber} (允許)")
+            self.logger.info(f"光纖連接器差異: target={target_has_fiber}, part={part_has_fiber} (允許)")
             # 改為警告而非拒絕
             
         return False
@@ -707,7 +707,7 @@ class ECCNToolEnhancer:
         
         if target_is_gpi != part_is_gpi:
             # GPI功能差異比較重要，因為這影響產品類型 (PoE注入器 vs 交換機)
-            self.logger.info(f"❌ GPI功能不匹配: target={target_is_gpi}, part={part_is_gpi}")
+            self.logger.info(f"GPI功能不匹配: target={target_is_gpi}, part={part_is_gpi}")
             return True
         
         # 管理功能檢查 (M vs 非M)
@@ -716,7 +716,7 @@ class ECCNToolEnhancer:
         
         # 對於管理功能，允許一定靈活性，但記錄差異
         if target_is_managed != part_is_managed:
-            self.logger.info(f"ℹ️ 管理功能差異: target={target_is_managed}, part={part_is_managed}")
+            self.logger.info(f"管理功能差異: target={target_is_managed}, part={part_is_managed}")
             # 不作為否決條件，因為描述可能不完整
         
         return False
@@ -761,7 +761,7 @@ class ECCNToolEnhancer:
         """
         增強原始分類結果
         """
-        self.logger.info(f" 開始工具增強分類: {product_model}")
+        self.logger.info(f"開始工具增強分類: {product_model}")
         
         # 執行交叉參考
         cross_ref_result = self.cross_reference_eccn(product_model, pdf_content)
@@ -792,7 +792,7 @@ class ECCNToolEnhancer:
         final_classification['tool_validation'] = True
         final_classification['validation_timestamp'] = datetime.now().isoformat()
         
-        self.logger.info(f"✅ 工具驗證完成: {final_classification.get('eccn_code')} (決策: {final_classification.get('validation_decision')})")
+        self.logger.info(f"工具驗證完成: {final_classification.get('eccn_code')} (決策: {final_classification.get('validation_decision')})")
         
         return final_classification
 
@@ -832,7 +832,7 @@ def example_usage():
         original_classification=original_result
     )
     
-    print(" 工具增強結果:")
+    print("工具增強結果:")
     print(json.dumps(validated_result, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
@@ -919,7 +919,7 @@ class MouserAPIClient:
             產品清單
         """
         try:
-            self.logger.info(f" Mouser關鍵字搜索: {keyword}")
+            self.logger.info(f"Mouser關鍵字搜索: {keyword}")
             
             # 使用查詢參數格式
             url = f"{self.search_endpoint}?apiKey={self.api_key}"
@@ -946,14 +946,14 @@ class MouserAPIClient:
                 search_results = data.get('SearchResults', {})
                 parts = search_results.get('Parts', [])
                 
-                self.logger.info(f" 找到 {len(parts)} 個產品")
+                self.logger.info(f"找到 {len(parts)} 個產品")
                 return parts
             else:
                 self.logger.warning(f"API回應錯誤: {response.status_code} - {response.text}")
                 return []
             
         except Exception as e:
-            self.logger.error(f" 關鍵字搜索失敗: {str(e)}")
+            self.logger.error(f"關鍵字搜索失敗: {str(e)}")
             return []
 
     def search_by_part_number(self, part_number: str) -> Optional[Dict]:
@@ -967,7 +967,7 @@ class MouserAPIClient:
             產品詳情或None
         """
         try:
-            self.logger.info(f" Mouser零件號搜索: {part_number}")
+            self.logger.info(f"Mouser零件號搜索: {part_number}")
             
             # 使用查詢參數格式
             url = f"{self.part_detail_endpoint}?apiKey={self.api_key}"
@@ -992,17 +992,17 @@ class MouserAPIClient:
                 parts = search_results.get('Parts', [])
                 
                 if parts:
-                    self.logger.info(f" 找到零件: {parts[0].get('MouserPartNumber', 'N/A')}")
+                    self.logger.info(f"找到零件: {parts[0].get('MouserPartNumber', 'N/A')}")
                     return parts[0]
                 else:
-                    self.logger.info("️ 未找到匹配的零件")
+                    self.logger.info("未找到匹配的零件")
                     return None
             else:
                 self.logger.warning(f"API回應錯誤: {response.status_code} - {response.text}")
                 return None
             
         except Exception as e:
-            self.logger.error(f" 零件號搜索失敗: {str(e)}")
+            self.logger.error(f"零件號搜索失敗: {str(e)}")
             return None
 
     def get_eccn_info(self, product_model: str, pdf_content: str = None) -> Optional[Dict]:
@@ -1017,7 +1017,7 @@ class MouserAPIClient:
             ECCN 資訊字典或None
         """
         try:
-            self.logger.info(f" 查詢ECCN: {product_model}")
+            self.logger.info(f"查詢ECCN: {product_model}")
             
             # 1. 嘗試精確零件號搜索
             exact_result = self.search_by_part_number(product_model)
@@ -1053,16 +1053,16 @@ class MouserAPIClient:
             
             # 4. 新增：特徵匹配搜索 (當前述方法都失敗時)
             if pdf_content:
-                self.logger.info(" 使用PDF特徵進行相似產品搜索...")
+                self.logger.info("使用PDF特徵進行相似產品搜索...")
                 feature_based_result = self.search_by_features(pdf_content, product_model)
                 if feature_based_result:
                     return feature_based_result
             
-            self.logger.warning(f"️ 未找到 {product_model} 的ECCN資訊")
+            self.logger.warning(f"未找到 {product_model} 的ECCN資訊")
             return None
             
         except Exception as e:
-            self.logger.error(f" ECCN查詢失敗: {str(e)}")
+            self.logger.error(f"ECCN查詢失敗: {str(e)}")
             return None
 
     def _make_request(self, url: str, payload: Dict) -> Optional[Dict]:
@@ -1081,12 +1081,12 @@ class MouserAPIClient:
                 
                 # API金鑰檢查
                 if response.status_code == 401:
-                    self.logger.error(" Mouser API認證失敗 - 請檢查API金鑰")
+                    self.logger.error("Mouser API認證失敗 - 請檢查API金鑰")
                     return None
                 
                 # 速率限制檢查
                 if response.status_code == 429:
-                    self.logger.warning("️ API速率限制 - 等待重試")
+                    self.logger.warning("API速率限制 - 等待重試")
                     time.sleep(self.rate_limit_delay * attempt)
                     continue
                 
@@ -1327,7 +1327,7 @@ class MouserAPIClient:
             特徵字典
         """
         try:
-            self.logger.info(" 提取PDF產品特徵...")
+            self.logger.info("提取PDF產品特徵...")
             
             content_lower = pdf_content.lower()
             features = {
@@ -1361,11 +1361,11 @@ class MouserAPIClient:
             # 4. 確定產品類型
             features['product_type'] = self._determine_product_type(features)
             
-            self.logger.info(f" 特徵提取完成，產品類型: {features['product_type']}")
+            self.logger.info(f"特徵提取完成，產品類型: {features['product_type']}")
             return features
             
         except Exception as e:
-            self.logger.error(f" PDF特徵提取失敗: {str(e)}")
+            self.logger.error(f"PDF特徵提取失敗: {str(e)}")
             return {}
     
     def _extract_technical_specs(self, content_lower: str) -> Dict[str, Any]:
@@ -1464,7 +1464,7 @@ class MouserAPIClient:
             # 2. 基於特徵搜索相似產品
             similar_products = self._search_similar_products(features)
             if not similar_products:
-                self.logger.info(" 未找到相似產品")
+                self.logger.info("未找到相似產品")
                 return None
             
             # 3. 提取ECCN並進行聚合分析
@@ -1487,7 +1487,7 @@ class MouserAPIClient:
             }
             
         except Exception as e:
-            self.logger.error(f" 特徵匹配搜索失敗: {str(e)}")
+            self.logger.error(f"特徵匹配搜索失敗: {str(e)}")
             return None
     
     def _search_similar_products(self, features: Dict) -> List[Dict]:
@@ -1523,7 +1523,7 @@ class MouserAPIClient:
             
             # 對每個查詢執行搜索
             for query in search_queries[:2]:  # 限制搜索次數
-                self.logger.info(f" 搜索查詢: {query}")
+                self.logger.info(f"搜索查詢: {query}")
                 results = self.search_by_keyword(query, max_results=15)
                 
                 # 過濾相關產品
@@ -1545,11 +1545,11 @@ class MouserAPIClient:
                     if len(unique_products) >= 20:  # 限制最多20個產品
                         break
             
-            self.logger.info(f" 找到 {len(unique_products)} 個相似產品")
+            self.logger.info(f"找到 {len(unique_products)} 個相似產品")
             return unique_products
             
         except Exception as e:
-            self.logger.error(f" 相似產品搜索失敗: {str(e)}")
+            self.logger.error(f"相似產品搜索失敗: {str(e)}")
             return []
     
     def _filter_relevant_products(self, products: List[Dict], features: Dict) -> List[Dict]:
@@ -1649,7 +1649,7 @@ class MouserAPIClient:
             }
             
         except Exception as e:
-            self.logger.error(f" ECCN分析失敗: {str(e)}")
+            self.logger.error(f"ECCN分析失敗: {str(e)}")
             return None
 
     def _calculate_eccn_scores(self, eccn_counts: Dict[str, List], features: Dict) -> Dict[str, Dict]:
@@ -1766,7 +1766,7 @@ class MouserAPIClient:
                 
                 if complexity_match > 0.7:  # 高匹配度
                     specification_bonus = int(complexity_match * 50)  # 最高50分獎勵
-                    self.logger.info(f"📊 {eccn_code}特徵複雜度匹配({complexity_match:.2f})，獲得規格獎勵: +{specification_bonus}")
+                    self.logger.info(f"{eccn_code}特徵複雜度匹配({complexity_match:.2f})，獲得規格獎勵: +{specification_bonus}")
                 elif complexity_match > 0.5:  # 中等匹配度
                     specification_bonus = int(complexity_match * 25)  # 最高25分獎勵
                 
@@ -1790,12 +1790,12 @@ class MouserAPIClient:
                     }
                 }
                 
-                self.logger.info(f"📊 {eccn_code}: 基礎({base_score}) + 特徵匹配({feature_match_score:.1f}) + 規格獎勵({specification_bonus}) = {final_score:.1f}")
+                self.logger.info(f"{eccn_code}: 基礎({base_score}) + 特徵匹配({feature_match_score:.1f}) + 規格獎勵({specification_bonus}) = {final_score:.1f}")
             
             return eccn_scores
             
         except Exception as e:
-            self.logger.error(f" ECCN評分計算失敗: {str(e)}")
+            self.logger.error(f"ECCN評分計算失敗: {str(e)}")
             return {}
 
 # 使用示例和測試
@@ -1818,7 +1818,7 @@ def test_mouser_api():
         "TN-4500A-T"
     ]
     
-    print(" Mouser API 測試")
+    print("Mouser API 測試")
     print("=" * 50)
     
     for model in test_models:
@@ -1827,12 +1827,12 @@ def test_mouser_api():
         eccn_info = client.get_eccn_info(model)
         
         if eccn_info:
-            print(f" ECCN: {eccn_info.get('eccn_code', 'N/A')}")
-            print(f"   信心度: {eccn_info.get('confidence', 'unknown')}")
-            print(f"   搜索方法: {eccn_info.get('search_method', 'unknown')}")
-            print(f"   製造商: {eccn_info.get('manufacturer', 'N/A')}")
+            print(f"ECCN: {eccn_info.get('eccn_code', 'N/A')}")
+            print(f" 信心度: {eccn_info.get('confidence', 'unknown')}")
+            print(f" 搜索方法: {eccn_info.get('search_method', 'unknown')}")
+            print(f" 製造商: {eccn_info.get('manufacturer', 'N/A')}")
         else:
-            print(" 未找到ECCN資訊")
+            print("未找到ECCN資訊")
         
         time.sleep(2)  # 避免API速率限制
 
@@ -1907,7 +1907,7 @@ class ECCNWebSearcher:
             搜索結果清單
         """
         try:
-            self.logger.info(f" 開始WebSearch ECCN查詢: {product_model}")
+            self.logger.info(f"開始WebSearch ECCN查詢: {product_model}")
             
             all_results = []
             
@@ -1931,17 +1931,17 @@ class ECCNWebSearcher:
             # 5. 分析和排序結果
             processed_results = self._process_search_results(all_results, product_model)
             
-            self.logger.info(f" WebSearch完成，找到 {len(processed_results)} 個相關結果")
+            self.logger.info(f"WebSearch完成，找到 {len(processed_results)} 個相關結果")
             return processed_results
             
         except Exception as e:
-            self.logger.error(f" WebSearch失敗: {str(e)}")
+            self.logger.error(f"WebSearch失敗: {str(e)}")
             return []
 
     def _search_official_sources(self, product_model: str) -> List[Dict]:
         """搜索官方政府來源"""
         
-        self.logger.info("️ 搜索官方政府來源")
+        self.logger.info("搜索官方政府來源")
         results = []
         
         queries = [
@@ -1963,7 +1963,7 @@ class ECCNWebSearcher:
     def _search_distributor_sources(self, product_model: str) -> List[Dict]:
         """搜索經銷商來源"""
         
-        self.logger.info(" 搜索經銷商來源")
+        self.logger.info("搜索經銷商來源")
         results = []
         
         queries = [
@@ -1985,7 +1985,7 @@ class ECCNWebSearcher:
     def _search_manufacturer_sources(self, product_model: str, manufacturer: str) -> List[Dict]:
         """搜索製造商來源"""
         
-        self.logger.info(f" 搜索製造商來源: {manufacturer}")
+        self.logger.info(f"搜索製造商來源: {manufacturer}")
         results = []
         
         # 推斷製造商網域
@@ -2008,7 +2008,7 @@ class ECCNWebSearcher:
     def _search_general_sources(self, product_model: str) -> List[Dict]:
         """搜索一般來源"""
         
-        self.logger.info(" 搜索一般來源")
+        self.logger.info("搜索一般來源")
         results = []
         
         queries = [
@@ -2449,7 +2449,7 @@ def test_websearch():
         ("TN-5510A-2L", "Moxa")
     ]
     
-    print(" WebSearch 測試")
+    print("WebSearch 測試")
     print("=" * 50)
     
     for model, manufacturer in test_products:
@@ -2459,10 +2459,10 @@ def test_websearch():
         
         print(f"找到 {len(results)} 個結果:")
         for i, result in enumerate(results[:3], 1):  # 顯示前3個結果
-            print(f"  {i}. ECCN: {result.get('eccn_code', 'N/A')}")
-            print(f"     信心度: {result.get('confidence', 'unknown')}")
-            print(f"     來源: {result.get('domain', 'unknown')}")
-            print(f"     分數: {result.get('combined_score', 0):.2f}")
+            print(f"{i}. ECCN: {result.get('eccn_code', 'N/A')}")
+            print(f"   信心度: {result.get('confidence', 'unknown')}")
+            print(f"   來源: {result.get('domain', 'unknown')}")
+            print(f"   分數: {result.get('combined_score', 0):.2f}")
 
 if __name__ == "__main__":
     test_websearch()

@@ -67,7 +67,7 @@ class ECCNEmbeddingClient:
             try:
                 text_chunks = self.split_text_into_chunks(entry['text'], max_tokens=7000)
                 if len(text_chunks) > 1:
-                    print(f"  {entry['eccn_code']} 分割為 {len(text_chunks)} 段，將拆成多筆embedding")
+                    print(f" {entry['eccn_code']} 分割為 {len(text_chunks)} 段，將拆成多筆embedding")
                 for idx, chunk in enumerate(text_chunks):
                     code = entry['eccn_code'] + (f'_chunk{idx+1}' if len(text_chunks) > 1 else '')
                     try:

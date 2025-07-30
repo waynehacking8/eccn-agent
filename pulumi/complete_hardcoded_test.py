@@ -28,14 +28,14 @@ def load_ground_truth():
                 ground_truth[product_model] = eccn
         return ground_truth
     except Exception as e:
-        print(f"❌ 載入 ground truth 錯誤: {e}")
+        print(f"載入 ground truth 錯誤: {e}")
         return {}
 
 def test_single_product(product_model, pdf_path, expected_eccn):
     """測試單個產品"""
-    print(f"\n🔄 測試: {product_model}")
-    print(f"   PDF: {Path(pdf_path).name}")
-    print(f"   期望: {expected_eccn}")
+    print(f"\n 測試: {product_model}")
+    print(f"  PDF: {Path(pdf_path).name}")
+    print(f"  期望: {expected_eccn}")
     
     start_time = time.time()
     
@@ -63,38 +63,38 @@ def test_single_product(product_model, pdf_path, expected_eccn):
                     
                     # 檢查是否匹配
                     if predicted_eccn == expected_eccn:
-                        print(f"   ✅ 正確: {predicted_eccn} ({method}, {confidence}) - {processing_time:.2f}s")
+                        print(f"   正確: {predicted_eccn} ({method}, {confidence}) - {processing_time:.2f}s")
                         return True, predicted_eccn, method, processing_time
                     else:
-                        print(f"   ❌ 錯誤: 預測 {predicted_eccn}, 期望 {expected_eccn} ({method}, {confidence}) - {processing_time:.2f}s")
+                        print(f"   錯誤: 預測 {predicted_eccn}, 期望 {expected_eccn} ({method}, {confidence}) - {processing_time:.2f}s")
                         return False, predicted_eccn, method, processing_time
                 else:
-                    print(f"   ❌ 失敗: {response_data.get('error', 'Unknown error')}")
+                    print(f"   失敗: {response_data.get('error', 'Unknown error')}")
                     return False, None, None, processing_time
             except json.JSONDecodeError as e:
-                print(f"   ❌ JSON錯誤: {e}")
+                print(f"   JSON錯誤: {e}")
                 return False, None, None, processing_time
         else:
-            print(f"   ❌ HTTP錯誤: {response.status_code}")
+            print(f"  HTTP錯誤: {response.status_code}")
             return False, None, None, processing_time
             
     except Exception as e:
         processing_time = time.time() - start_time
-        print(f"   ❌ 異常: {e}")
+        print(f"  異常: {e}")
         return False, None, None, processing_time
 
 def main():
     """主程序"""
-    print("🚀 完整硬編碼測試 - 修復後的ECCN分類系統")
+    print("完整硬編碼測試 - 修復後的ECCN分類系統")
     print("=" * 60)
     
     # 載入ground truth
     ground_truth = load_ground_truth()
     if not ground_truth:
-        print("❌ 無法載入ground truth數據")
+        print("無法載入ground truth數據")
         return
     
-    print(f"✅ 載入 {len(ground_truth)} 個ground truth記錄")
+    print(f"載入 {len(ground_truth)} 個ground truth記錄")
     
     # 硬編碼所有實際存在的PDF測試案例 (52個，包含新增的7個PDF)
     test_cases = [
@@ -167,12 +167,12 @@ def main():
     
     for product_model, relative_path in test_cases:
         if product_model not in ground_truth:
-            print(f"⚠️ 跳過 {product_model}: 沒有ground truth")
+            print(f"跳過 {product_model}: 沒有ground truth")
             continue
             
         pdf_path = Path(relative_path)
         if not pdf_path.exists():
-            print(f"⚠️ 跳過 {product_model}: PDF文件不存在 {pdf_path}")
+            print(f"跳過 {product_model}: PDF文件不存在 {pdf_path}")
             continue
             
         expected_eccn = ground_truth[product_model]
@@ -201,13 +201,13 @@ def main():
     total_time = time.time() - start_time
     
     # 統計結果
-    print(f"\n📊 測試結果統計:")
-    print(f"   總測試數: {total_count}")
-    print(f"   正確數: {correct_count}")
-    print(f"   準確率: {correct_count/total_count*100:.1f}%" if total_count > 0 else "N/A")
-    print(f"   Mouser直接查詢: {mouser_direct_count} ({mouser_direct_count/total_count*100:.1f}%)")
-    print(f"   總耗時: {total_time:.1f}秒")
-    print(f"   平均耗時: {total_time/total_count:.2f}秒/個" if total_count > 0 else "N/A")
+    print(f"\n 測試結果統計:")
+    print(f"  總測試數: {total_count}")
+    print(f"  正確數: {correct_count}")
+    print(f"  準確率: {correct_count/total_count*100:.1f}%" if total_count > 0 else "N/A")
+    print(f"  Mouser直接查詢: {mouser_direct_count} ({mouser_direct_count/total_count*100:.1f}%)")
+    print(f"  總耗時: {total_time:.1f}秒")
+    print(f"  平均耗時: {total_time/total_count:.2f}秒/個" if total_count > 0 else "N/A")
     
     # 方法統計
     method_stats = {}
@@ -220,23 +220,23 @@ def main():
             if result['is_correct']:
                 method_stats[method]['correct'] += 1
     
-    print(f"\n📈 按方法統計:")
+    print(f"\n 按方法統計:")
     for method, stats in method_stats.items():
         acc = (stats['correct'] / stats['total'] * 100) if stats['total'] > 0 else 0
-        print(f"   {method}: {stats['correct']}/{stats['total']} ({acc:.1f}%)")
+        print(f" {method}: {stats['correct']}/{stats['total']} ({acc:.1f}%)")
     
     # 顯示詳細結果
-    print(f"\n📋 詳細結果:")
+    print(f"\n 詳細結果:")
     for result in results:
-        status = "✅" if result['is_correct'] else "❌"
-        print(f"   {status} {result['product_model']}: {result['predicted_eccn']} (期望: {result['expected_eccn']}) - {result['method']}")
+        status = "" if result['is_correct'] else ""
+        print(f" {status} {result['product_model']}: {result['predicted_eccn']} (期望: {result['expected_eccn']}) - {result['method']}")
     
     # 錯誤案例分析
     errors = [r for r in results if not r['is_correct']]
     if errors:
-        print(f"\n🔍 錯誤案例分析:")
+        print(f"\n 錯誤案例分析:")
         for error in errors:
-            print(f"   ❌ {error['product_model']}: 預測 {error['predicted_eccn']} vs 期望 {error['expected_eccn']}")
+            print(f"  {error['product_model']}: 預測 {error['predicted_eccn']} vs 期望 {error['expected_eccn']}")
     
     # 保存結果
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

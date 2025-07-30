@@ -62,10 +62,10 @@ def load_eccn_embeddings(pickle_path: str = None):
             _entries = _embeddings_data["entries"]
             _embeddings = [entry["embedding"] for entry in _entries]
             
-            print(f" Loaded {len(_entries)} ECCN entries with embeddings")
-            print(f"   Embedding dimension: {_embeddings_data['metadata']['embedding_dimension']}")
+            print(f"Loaded {len(_entries)} ECCN entries with embeddings")
+            print(f" Embedding dimension: {_embeddings_data['metadata']['embedding_dimension']}")
         except Exception as e:
-            print(f" Error loading ECCN embeddings: {e}")
+            print(f"Error loading ECCN embeddings: {e}")
             raise
     
     return _embeddings_data
@@ -346,7 +346,7 @@ def test_functions():
     categories = get_unique_categories()
     print(f"Categories: {categories['total_categories']} found")
     
-    print(" All tests completed successfully!")
+    print("All tests completed successfully!")
 
 if __name__ == "__main__":
     test_functions()

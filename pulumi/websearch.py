@@ -68,7 +68,7 @@ class ECCNWebSearcher:
             搜索結果清單
         """
         try:
-            self.logger.info(f"🔍 開始WebSearch ECCN查詢: {product_model}")
+            self.logger.info(f"開始WebSearch ECCN查詢: {product_model}")
             
             all_results = []
             
@@ -96,17 +96,17 @@ class ECCNWebSearcher:
             pending_count = sum(1 for r in processed_results if r.get('eccn_code') == 'PENDING_VERIFICATION')
             confirmed_count = len(processed_results) - pending_count
             
-            self.logger.info(f"✅ WebSearch完成，找到 {confirmed_count} 個確認結果，{pending_count} 個待驗證結果")
+            self.logger.info(f"WebSearch完成，找到 {confirmed_count} 個確認結果，{pending_count} 個待驗證結果")
             return processed_results
             
         except Exception as e:
-            self.logger.error(f"❌ WebSearch失敗: {str(e)}")
+            self.logger.error(f"WebSearch失敗: {str(e)}")
             return []
 
     def _search_official_sources(self, product_model: str) -> List[Dict]:
         """搜索官方政府來源"""
         
-        self.logger.info("🏛️ 搜索官方政府來源")
+        self.logger.info("搜索官方政府來源")
         results = []
         
         queries = [
@@ -198,13 +198,13 @@ class ECCNWebSearcher:
         使用DuckDuckGo進行真實搜索，避免模擬結果干擾
         """
         
-        self.logger.info(f"🔍 執行真實WebSearch查詢: {query}")
+        self.logger.info(f"執行真實WebSearch查詢: {query}")
         
         try:
             # 使用 DuckDuckGo HTML 搜索 (無需API金鑰)
             return self._duckduckgo_search(query)
         except Exception as e:
-            self.logger.error(f"❌ WebSearch查詢失敗: {str(e)}")
+            self.logger.error(f"WebSearch查詢失敗: {str(e)}")
             return []
 
 
@@ -531,7 +531,7 @@ class ECCNWebSearcher:
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             }
             
-            self.logger.info(f"🔍 DuckDuckGo搜索: {query}")
+            self.logger.info(f"DuckDuckGo搜索: {query}")
             
             response = requests.get(search_url, headers=headers, timeout=self.timeout)
             response.raise_for_status()
@@ -588,11 +588,11 @@ class ECCNWebSearcher:
                     self.logger.warning(f"解析搜索結果失敗: {str(e)}")
                     continue
             
-            self.logger.info(f"✅ DuckDuckGo搜索完成，找到 {len(results)} 個結果")
+            self.logger.info(f"DuckDuckGo搜索完成，找到 {len(results)} 個結果")
             return results
             
         except Exception as e:
-            self.logger.error(f"❌ DuckDuckGo搜索失敗: {str(e)}")
+            self.logger.error(f"DuckDuckGo搜索失敗: {str(e)}")
             return []
 
     def _google_custom_search(self, query: str) -> List[Dict]:
@@ -627,20 +627,20 @@ def test_websearch():
         ("TN-5510A-2L", "Moxa")
     ]
     
-    print("🔍 WebSearch 測試")
+    print("WebSearch 測試")
     print("=" * 50)
     
     for model, manufacturer in test_products:
-        print(f"\n🔍 搜索: {model} ({manufacturer})")
+        print(f"\n 搜索: {model} ({manufacturer})")
         
         results = searcher.search_eccn_information(model, manufacturer)
         
         print(f"找到 {len(results)} 個結果:")
         for i, result in enumerate(results[:3], 1):  # 顯示前3個結果
-            print(f"  {i}. ECCN: {result.get('eccn_code', 'N/A')}")
-            print(f"     信心度: {result.get('confidence', 'unknown')}")
-            print(f"     來源: {result.get('domain', 'unknown')}")
-            print(f"     分數: {result.get('combined_score', 0):.2f}")
+            print(f"{i}. ECCN: {result.get('eccn_code', 'N/A')}")
+            print(f"   信心度: {result.get('confidence', 'unknown')}")
+            print(f"   來源: {result.get('domain', 'unknown')}")
+            print(f"   分數: {result.get('combined_score', 0):.2f}")
 
 if __name__ == "__main__":
     test_websearch()

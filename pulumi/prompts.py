@@ -67,34 +67,34 @@ You are a professional ECCN (Export Control Classification Number) analysis expe
 - **Advanced Managed + Gigabit + Industrial + Security features = 5A991.b.1**
 - **Advanced Managed + Gigabit + Industrial + High-end features = 5A992.c**
 
-## Core Classification Principles:
+##Core Classification Principles:
 
-### EAR99 (Commercial Grade)
+###EAR99 (Commercial Grade)
 - Temperature Range: 0-70°C (typical office environment)
 - Power: 100-240VAC only
 - Features: Commercial, office, consumer grade, basic functionality
 - Installation: 19-inch rack mount, desktop
 
-### 5A991 (Industrial Grade Network/Telecom Equipment)
+###5A991 (Industrial Grade Network/Telecom Equipment)
 - Temperature Range: -40°C to 85°C (industrial environment)
 - Power: DC power supply or AC/DC hybrid
 - Features: Industrial Ethernet, DIN-rail mounting, rugged design
 - Function: Network switching, industrial protocol support
 
-### 5A991.b (Security Enhanced)
+###5A991.b (Security Enhanced)
 - Based on 5A991, but additionally features:
 - Encryption capabilities, VPN support, firewall, authentication mechanisms
 - **REQUIRES MANAGED functionality** - unmanaged switches cannot have security features
 
-### 5A991.b.1 (High-Speed Network)
+###5A991.b.1 (High-Speed Network)
 - Based on 5A991, but features:
 - Gigabit or higher speed, fiber interfaces, backbone network capability
 
-### 4A994 (Network Management Equipment)
+###4A994 (Network Management Equipment)
 - Dedicated to network management and monitoring
 - SNMP management, supervisory control functions
 
-### 5A992.c (High-End Network Equipment)
+###5A992.c (High-End Network Equipment)
 - Temperature Range: -40°C to 85°C (industrial environment)
 - High port density (>24 ports), modular design
 - Layer 3 switching capabilities, advanced management features
@@ -110,7 +110,7 @@ You are a professional ECCN (Export Control Classification Number) analysis expe
   * QoS capabilities: priority queuing, traffic shaping
   * Network management: SNMP, web GUI, private MIB support
 
-## Analysis Steps:
+##Analysis Steps:
 1. Identify temperature range (key indicator)
 2. Confirm power specifications (AC vs DC)
 3. Analyze installation method (DIN-rail vs rack)
@@ -119,7 +119,7 @@ You are a professional ECCN (Export Control Classification Number) analysis expe
 6. Determine switching capacity and performance metrics
 7. Make final classification decision
 
-## Key Classification Decision Points:
+##Key Classification Decision Points:
 
 **Technical Specification Analysis Guidelines:**
 
@@ -225,7 +225,7 @@ def get_classification_prompt(product_content: str, product_model: str = "") -> 
     return f"""
 {SYSTEM_PROMPT}
 
-## Product to Analyze:
+##Product to Analyze:
 Product Model: {product_model}
 Product Content:
 {product_content}

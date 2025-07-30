@@ -88,16 +88,16 @@ class CompletePipelineECCNClassifier:
         """執行完整Pipeline ECCN分類"""
         start_time = time.time()
         
-        self.logger.info(f"🚀 開始完整Pipeline ECCN分類: {product_model}")
+        self.logger.info(f"開始完整Pipeline ECCN分類: {product_model}")
         
         try:
             # 步驟1: 優先Mouser API直接查詢
-            self.logger.info("🔍 步驟1: Mouser API直接查詢...")
+            self.logger.info("步驟1: Mouser API直接查詢...")
             mouser_direct_result = self._mouser_direct_search(product_model)
             
             if mouser_direct_result and mouser_direct_result.get('eccn_code'):
                 # 找到直接匹配，立即返回
-                self.logger.info(f"✅ Mouser API直接找到: {mouser_direct_result.get('eccn_code')}")
+                self.logger.info(f"Mouser API直接找到: {mouser_direct_result.get('eccn_code')}")
                 return self._create_success_response({
                     'eccn_code': mouser_direct_result.get('eccn_code'),
                     'confidence': mouser_direct_result.get('confidence', 'high'),
@@ -105,17 +105,17 @@ class CompletePipelineECCNClassifier:
                     'reasoning': f'Mouser API直接查詢結果: {mouser_direct_result.get("reasoning", "")}',
                     'data_sources': {
                         'primary_source': 'mouser_api_direct',
-                        'mouser_direct': '✅ 成功',
-                        'pdf_feature_analysis': '❌ 未執行（已找到直接匹配）',
-                        'mouser_similar_search': '❌ 未執行（已找到直接匹配）',
-                        'websearch_validation': '❌ 未執行（已找到直接匹配）',
-                        'llm_decision': '❌ 未執行（已找到直接匹配）'
+                        'mouser_direct': ' 成功',
+                        'pdf_feature_analysis': ' 未執行（已找到直接匹配）',
+                        'mouser_similar_search': ' 未執行（已找到直接匹配）',
+                        'websearch_validation': ' 未執行（已找到直接匹配）',
+                        'llm_decision': ' 未執行（已找到直接匹配）'
                     },
                     'processing_time': f"{time.time() - start_time:.2f}s"
                 })
             
             # 步驟2: Mouser API未找到，直接進入技術規格分析
-            self.logger.info("❌ Mouser API直接查詢未找到，開始PDF技術規格分析...")
+            self.logger.info("Mouser API直接查詢未找到，開始PDF技術規格分析...")
             
             # 2.1 獲取PDF技術內容
             pdf_content = self._get_pdf_content(s3_key)
@@ -123,16 +123,16 @@ class CompletePipelineECCNClassifier:
                 return self._create_error_response("無法獲取PDF內容", s3_key)
             
             # 2.2 提取PDF技術規格
-            self.logger.info("📋 提取PDF技術規格...")
+            self.logger.info("提取PDF技術規格...")
             technical_specs = self._extract_technical_specifications(pdf_content)
             
             # 2.3 基於技術規格執行Mouser相似產品查詢
-            self.logger.info("🔍 基於技術規格執行Mouser相似產品查詢...")
+            self.logger.info("基於技術規格執行Mouser相似產品查詢...")
             mouser_similar_result = self._mouser_similar_search(pdf_content, product_model)
             websearch_result = self._websearch_validation(product_model)
             
             # 步驟3: 基於技術規格的LLM分類決策 
-            self.logger.info("🤖 基於技術規格進行LLM分類決策...")
+            self.logger.info("基於技術規格進行LLM分類決策...")
             final_classification = self._specification_based_classification(
                 pdf_content, 
                 product_model,
@@ -150,11 +150,11 @@ class CompletePipelineECCNClassifier:
                 debug
             )
             
-            self.logger.info(f"✅ Pipeline完成: {final_result.get('eccn_code')} ({time.time() - start_time:.2f}s)")
+            self.logger.info(f"Pipeline完成: {final_result.get('eccn_code')} ({time.time() - start_time:.2f}s)")
             return self._create_success_response(final_result)
             
         except Exception as e:
-            self.logger.error(f"❌ Pipeline失敗: {str(e)}")
+            self.logger.error(f"Pipeline失敗: {str(e)}")
             # 最終失敗保護 - 永遠不返回null
             failsafe_result = self._get_failsafe_classification(product_model)
             return self._create_success_response(failsafe_result)
@@ -174,7 +174,7 @@ class CompletePipelineECCNClassifier:
             }
             return specs
         except Exception as e:
-            self.logger.warning(f"⚠️ 技術規格提取失敗: {str(e)}")
+            self.logger.warning(f"技術規格提取失敗: {str(e)}")
             return {}
     
     def _extract_temperature_range(self, pdf_content: str) -> str:
@@ -258,7 +258,7 @@ class CompletePipelineECCNClassifier:
     
     def _get_failsafe_classification(self, product_model: str) -> Dict:
         """Final failsafe classification - ensures never returns null"""
-        self.logger.info("🛡️ Activating failsafe classification...")
+        self.logger.info("Activating failsafe classification...")
         
         # Conservative classification based on product type
         if not product_model:
@@ -284,13 +284,13 @@ class CompletePipelineECCNClassifier:
             'reasoning': reasoning,
             'data_sources': {
                 'primary_source': 'failsafe_pattern_matching',
-                'mouser_direct': '❌ 失敗',
-                'pattern_matching': '❌ 失敗',
-                'pdf_feature_analysis': '❌ 失敗',
-                'mouser_similar_search': '❌ 失敗', 
-                'websearch_validation': '❌ 失敗',
-                'llm_decision': '❌ 失敗',
-                'failsafe_protection': '✅ 已啟動'
+                'mouser_direct': ' 失敗',
+                'pattern_matching': ' 失敗',
+                'pdf_feature_analysis': ' 失敗',
+                'mouser_similar_search': ' 失敗', 
+                'websearch_validation': ' 失敗',
+                'llm_decision': ' 失敗',
+                'failsafe_protection': ' 已啟動'
             },
             'processing_time': '0.01s',
             'warning': 'This is a failsafe classification - manual review recommended'
@@ -305,20 +305,20 @@ class CompletePipelineECCNClassifier:
             result = tool_enhancer.search_mouser_eccn(product_model)
             
             if result and result.get('eccn_code'):
-                self.logger.info(f"✅ Mouser直接查詢成功: {result.get('eccn_code')}")
+                self.logger.info(f"Mouser直接查詢成功: {result.get('eccn_code')}")
                 return result
             else:
-                self.logger.info("❌ Mouser直接查詢未找到匹配")
+                self.logger.info("Mouser直接查詢未找到匹配")
                 return None
                 
         except Exception as e:
-            self.logger.warning(f"⚠️ Mouser直接查詢失敗: {str(e)}")
+            self.logger.warning(f"Mouser直接查詢失敗: {str(e)}")
             return None
     
     def _mouser_similar_search(self, pdf_content: str, product_model: str) -> Dict:
         """PDF feature-based Mouser similarity search"""
         try:
-            self.logger.info("🔍 Mouser similarity analysis starting...")
+            self.logger.info("Mouser similarity analysis starting...")
             
             from mouser_algorithm import MouserSimilarityAnalyzer
             
@@ -329,7 +329,7 @@ class CompletePipelineECCNClassifier:
             result = analyzer.analyze_similar_products(pdf_content, product_model)
             
             if result.get('status') == 'success':
-                self.logger.info(f"✅ Mouser analysis successful: {result.get('eccn_code')} (confidence: {result.get('confidence')})")
+                self.logger.info(f"Mouser analysis successful: {result.get('eccn_code')} (confidence: {result.get('confidence')})")
                 
                 # Pass results to LLM for final decision
                 return {
@@ -343,7 +343,7 @@ class CompletePipelineECCNClassifier:
                     'eccn_distribution': result.get('eccn_distribution')
                 }
             else:
-                self.logger.info(f"❌ Mouser analysis failed: {result.get('error', 'Unknown error')}")
+                self.logger.info(f"Mouser analysis failed: {result.get('error', 'Unknown error')}")
                 return {
                     'status': 'no_results',
                     'eccn_suggestions': [],
@@ -353,11 +353,11 @@ class CompletePipelineECCNClassifier:
                 }
                 
         except Exception as e:
-            self.logger.error(f"⚠️ Mouser similarity analysis exception: {str(e)}")
+            self.logger.error(f"Mouser similarity analysis exception: {str(e)}")
             
             # Fallback to original method if enhanced fails
             try:
-                self.logger.info("🔄 Falling back to original Mouser method...")
+                self.logger.info("Falling back to original Mouser method...")
                 from tools import MouserAPIClient
                 mouser_client = MouserAPIClient(logger=self.logger)
                 
@@ -372,7 +372,7 @@ class CompletePipelineECCNClassifier:
                     }
                     
             except Exception as fallback_error:
-                self.logger.error(f"⚠️ Fallback Mouser method also failed: {str(fallback_error)}")
+                self.logger.error(f"Fallback Mouser method also failed: {str(fallback_error)}")
             
             return {
                 'status': 'failed',
@@ -392,7 +392,7 @@ class CompletePipelineECCNClassifier:
             results = web_searcher.search_eccn_information(product_model, "Advantech")
             
             if results:
-                self.logger.info(f"✅ WebSearch找到 {len(results)} 個權威來源")
+                self.logger.info(f"WebSearch找到 {len(results)} 個權威來源")
                 return {
                     'status': 'success',
                     'eccn_suggestions': results[:5],  # 取前5個最相關
@@ -400,7 +400,7 @@ class CompletePipelineECCNClassifier:
                     'method': 'websearch_cross_validation'
                 }
             else:
-                self.logger.info("❌ WebSearch未找到相關來源")
+                self.logger.info("WebSearch未找到相關來源")
                 return {
                     'status': 'no_results',
                     'eccn_suggestions': [],
@@ -409,7 +409,7 @@ class CompletePipelineECCNClassifier:
                 }
                 
         except Exception as e:
-            self.logger.warning(f"⚠️ WebSearch交叉驗證失敗: {str(e)}")
+            self.logger.warning(f"WebSearch交叉驗證失敗: {str(e)}")
             return {
                 'status': 'failed',
                 'error': str(e),
@@ -421,12 +421,12 @@ class CompletePipelineECCNClassifier:
                                   technical_specs: Dict, mouser_similar: Dict, websearch: Dict) -> Dict:
         """LLM綜合決策所有來源結果"""
         try:
-            self.logger.info("🤖 執行LLM綜合決策...")
+            self.logger.info("執行LLM綜合決策...")
             
             # Gigabit檢測現在由prompts.py中的智能邏輯處理，不再使用硬編碼覆蓋
             
             # 安全功能檢測現在由prompts.py中的智能邏輯處理，不再使用硬編碼覆蓋
-            self.logger.info("📋 所有分類邏輯現在統一由prompts.py智能處理，開始LLM綜合分析...")
+            self.logger.info("所有分類邏輯現在統一由prompts.py智能處理，開始LLM綜合分析...")
             
             # 準備綜合上下文
             context = self._prepare_comprehensive_context(mouser_similar, websearch)
@@ -488,11 +488,11 @@ Please respond in JSON format."""
                 return result
             except json.JSONDecodeError:
                 # 處理非JSON回應
-                self.logger.warning("⚠️ LLM回應非JSON格式，嘗試解析")
+                self.logger.warning("LLM回應非JSON格式，嘗試解析")
                 return self._parse_non_json_llm_response(llm_text, product_model)
                 
         except Exception as e:
-            self.logger.error(f"❌ LLM綜合決策失敗: {str(e)}")
+            self.logger.error(f"LLM綜合決策失敗: {str(e)}")
             # 使用失敗保護分類
             failsafe = self._get_failsafe_classification(product_model)
             return {
@@ -586,11 +586,11 @@ Please respond in JSON format."""
             'method': method,
             'data_sources': {
                 'primary_source': 'llm_comprehensive_decision',
-                'mouser_direct': '❌ 未找到直接匹配',
-                'pdf_feature_analysis': '✅ 已執行',
-                'mouser_similar_search': '✅ 已執行' if mouser_similar.get('status') == 'success' else '❌ 失敗',
-                'websearch_validation': '✅ 已執行' if websearch.get('status') == 'success' else '❌ 失敗',
-                'llm_decision': '✅ 綜合決策完成'
+                'mouser_direct': ' 未找到直接匹配',
+                'pdf_feature_analysis': ' 已執行',
+                'mouser_similar_search': ' 已執行' if mouser_similar.get('status') == 'success' else ' 失敗',
+                'websearch_validation': ' 已執行' if websearch.get('status') == 'success' else ' 失敗',
+                'llm_decision': ' 綜合決策完成'
             },
             'source_details': {
                 'mouser_similar_products': mouser_similar.get('similar_products_count', 0),
@@ -626,16 +626,16 @@ Please respond in JSON format."""
     def _get_pdf_content(self, s3_key: str) -> Optional[str]:
         """從S3獲取PDF內容"""
         try:
-            self.logger.info(f"📄 從S3獲取PDF內容: {s3_key}")
+            self.logger.info(f"從S3獲取PDF內容: {s3_key}")
             
             response = self.s3_client.get_object(Bucket=S3_BUCKET_NAME, Key=s3_key)
             content = response['Body'].read().decode('utf-8')
             
-            self.logger.info(f"✅ 成功獲取PDF內容 ({len(content)} 字符)")
+            self.logger.info(f"成功獲取PDF內容 ({len(content)} 字符)")
             return content
             
         except Exception as e:
-            self.logger.error(f"❌ 無法獲取PDF內容: {str(e)}")
+            self.logger.error(f"無法獲取PDF內容: {str(e)}")
             return None
     
     def _create_success_response(self, data: Dict) -> Dict:

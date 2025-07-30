@@ -9,7 +9,7 @@ The following data were extracted from the AFM files:
 
 """
 
-###  BEGIN Verbatim copy of the license part
+### BEGIN Verbatim copy of the license part
 
 #
 # Adobe Core 35 AFM Files with 314 Glyph Entries - ReadMe
@@ -24,7 +24,7 @@ The following data were extracted from the AFM files:
 # obligation to support the use of the AFM files.
 #
 
-###  END Verbatim copy of the license part
+### END Verbatim copy of the license part
 
 # flake8: noqa
 from typing import Dict
@@ -66,7 +66,7 @@ def convert_font_metrics(path: str) -> None:
         print("# -*- python -*-")
         print("FONT_METRICS = {")
         for (fontname, (props, chars)) in fonts.items():
-            print(" {!r}: {!r},".format(fontname, (props, chars)))
+            print("{!r}: {!r},".format(fontname, (props, chars)))
         print("}")
 
 

@@ -40,9 +40,9 @@ You are an expert in US Export Control Classification Numbers (ECCN) for industr
 
 Analyze the provided PDF technical specification and classify it into the correct ECCN category based on these rules:
 
-## ECCN Classification Rules (Based on Ground Truth Analysis):
+##ECCN Classification Rules (Based on Ground Truth Analysis):
 
-### EAR99 - Commercial/Consumer Grade (35.2% of products)
+###EAR99 - Commercial/Consumer Grade (35.2% of products)
 **Characteristics:**
 - Commercial grade equipment for office/business use
 - Operating temperature: 0°C to 60°C (32°F to 140°F)  
@@ -50,7 +50,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 - No advanced industrial features
 - Standard commercial environment rating
 
-### 5A991 - Standard Industrial Grade (29.6% of products)
+###5A991 - Standard Industrial Grade (29.6% of products)
 **Characteristics:**
 - Industrial Ethernet switches for factory automation
 - Operating temperature: -40°C to 75°C (-40°F to 167°F)
@@ -59,7 +59,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 - Basic industrial networking features
 - NOT high-performance or enhanced security
 
-### 5A991.b - Enhanced Industrial Grade (9.3% of products)
+###5A991.b - Enhanced Industrial Grade (9.3% of products)
 **Characteristics:**
 - Enhanced industrial switches with security/redundancy features
 - Operating temperature: -40°C to 75°C
@@ -67,7 +67,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 - Redundancy features (power, network paths)
 - Enhanced management capabilities
 
-### 5A991.b.1 - High-Performance Industrial (7.4% of products)  
+###5A991.b.1 - High-Performance Industrial (7.4% of products)  
 **Characteristics:**
 - **High-performance industrial equipment with specialized capabilities**
 - **PoE Extenders with high power delivery (50-60W)**
@@ -80,7 +80,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 - **Key indicators**: "Extender", "HDBaseT", "60W PoE", "Media Converter", "8GE", "LI" (enhanced industrial)
 - **Examples**: PoE extenders, media converters, high-port-density gigabit switches, long-reach industrial equipment
 
-### 4A994 - Management Equipment (13.0% of products)
+###4A994 - Management Equipment (13.0% of products)
 **Characteristics:**
 - Managed switches with centralized management capabilities
 - SNMP management protocols
@@ -88,7 +88,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 - Centralized configuration and monitoring
 - May have "M" (Management) or "MI" (Management Industrial) in model name
 
-## Analysis Instructions:
+##Analysis Instructions:
 1. Read the entire PDF content carefully
 2. Focus on technical specifications, not product naming patterns
 3. Identify key indicators: temperature range, management features, performance specs, security features
@@ -105,7 +105,7 @@ Analyze the provided PDF technical specification and classify it into the correc
 5. Apply the classification rules above in priority order
 6. Provide your reasoning based on specific technical details found
 
-## Response Format:
+##Response Format:
 {{
   "eccn_code": "selected_eccn",
   "confidence": "High/Medium/Low", 
@@ -113,7 +113,7 @@ Analyze the provided PDF technical specification and classify it into the correc
   "key_indicators": ["list", "of", "key", "technical", "features", "found"]
 }}
 
-## PDF Content to Analyze:
+##PDF Content to Analyze:
 {pdf_content}
 
 Classify this product based on its technical specifications only. Do NOT use product naming patterns for classification.

@@ -413,7 +413,7 @@ class HtmlMixin:
         return CSSSelector(expr, translator=translator)(self)
 
     ########################################
-    ## Link functions
+    ##Link functions
     ########################################
 
     def make_links_absolute(self, base_url=None, resolve_base_href=True,
@@ -505,8 +505,8 @@ class HtmlMixin:
             tag = _nons(el.tag)
             if tag == 'object':
                 codebase = None
-                ## <object> tags have attributes that are relative to
-                ## codebase
+                ##<object> tags have attributes that are relative to
+                ##codebase
                 if 'codebase' in attribs:
                     codebase = el.get('codebase')
                     yield (el, 'codebase', codebase, 0)
@@ -541,12 +541,12 @@ class HtmlMixin:
             elif tag == 'param':
                 valuetype = el.get('valuetype') or ''
                 if valuetype.lower() == 'ref':
-                    ## FIXME: while it's fine we *find* this link,
-                    ## according to the spec we aren't supposed to
-                    ## actually change the value, including resolving
-                    ## it.  It can also still be a link, even if it
-                    ## doesn't have a valuetype="ref" (which seems to be the norm)
-                    ## http://www.w3.org/TR/html401/struct/objects.html#adef-valuetype
+                    ##FIXME: while it's fine we *find* this link,
+                    ##according to the spec we aren't supposed to
+                    ##actually change the value, including resolving
+                    ##it.  It can also still be a link, even if it
+                    ##doesn't have a valuetype="ref" (which seems to be the norm)
+                    ##http://www.w3.org/TR/html401/struct/objects.html#adef-valuetype
                     yield (el, 'value', el.get('value'), 0)
             elif tag == 'style' and el.text:
                 urls = [
@@ -1100,7 +1100,7 @@ def submit_form(form, extra_values=None, open_http=None):
 def open_http_urllib(method, url, values):
     if not url:
         raise ValueError("cannot submit, no URL provided")
-    ## FIXME: should test that it's not a relative URL or something
+    ##FIXME: should test that it's not a relative URL or something
     try:
         from urllib import urlencode, urlopen
     except ImportError: # Python 3
@@ -1171,8 +1171,8 @@ class InputGetter:
             self.__class__.__name__,
             self.form._name())
 
-    ## FIXME: there should be more methods, and it's unclear if this is
-    ## a dictionary-like object or list-like object
+    ##FIXME: there should be more methods, and it's unclear if this is
+    ##a dictionary-like object or list-like object
 
     def __getitem__(self, name):
         fields = [field for field in self if field.name == name]
@@ -1620,7 +1620,7 @@ class InputElement(InputMixin, HtmlElement):
 
     """
 
-    ## FIXME: I'm a little uncomfortable with the use of .checked
+    ##FIXME: I'm a little uncomfortable with the use of .checked
     @property
     def value(self):
         """
@@ -1739,7 +1739,7 @@ HtmlElementClassLookup._default_element_classes['label'] = LabelElement
 
 
 ############################################################
-## Serialization
+##Serialization
 ############################################################
 
 def html_to_xhtml(html):

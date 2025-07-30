@@ -389,7 +389,7 @@ def logger_warning(msg: str, src: str) -> None:
 
     That allows people to overwrite it more easily.
 
-    ## Exception, warnings.warn, logger_warning
+    ##Exception, warnings.warn, logger_warning
     - Exceptions should be used if the user should write code that deals with
       an error case, e.g. the PDF being completely broken.
     - warnings.warn should be used if the user needs to fix their code, e.g.

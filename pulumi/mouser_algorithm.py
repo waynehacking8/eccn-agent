@@ -61,11 +61,11 @@ class MouserSimilarityAnalyzer:
         Main entry point for similarity analysis
         """
         try:
-            self.logger.info(f"🔍 Starting similarity analysis for {product_model}")
+            self.logger.info(f"Starting similarity analysis for {product_model}")
             
             # Step 1: Extract technical specifications from PDF
             target_specs = self._extract_technical_specs(pdf_content)
-            self.logger.info(f"📋 Extracted specs: {target_specs}")
+            self.logger.info(f"Extracted specs: {target_specs}")
             
             # Step 2: Generate smart search queries based on specs
             search_queries = self._generate_smart_queries(target_specs, product_model)
@@ -74,7 +74,7 @@ class MouserSimilarityAnalyzer:
             similar_products = self._search_with_multiple_strategies(search_queries)
             
             if len(similar_products) < self.search_config['min_products_for_analysis']:
-                self.logger.warning(f"⚠️ Only found {len(similar_products)} products, insufficient for analysis")
+                self.logger.warning(f"Only found {len(similar_products)} products, insufficient for analysis")
                 return self._create_failure_response("Insufficient similar products found")
             
             # Step 4: Calculate similarity scores for each product
@@ -87,7 +87,7 @@ class MouserSimilarityAnalyzer:
             return self._generate_final_recommendation(eccn_analysis, scored_products, target_specs)
             
         except Exception as e:
-            self.logger.error(f"❌ Similarity analysis failed: {str(e)}")
+            self.logger.error(f"Similarity analysis failed: {str(e)}")
             return self._create_failure_response(str(e))
     
     def _extract_technical_specs(self, pdf_content: str) -> Dict:
@@ -206,7 +206,7 @@ class MouserSimilarityAnalyzer:
         
         for query in queries:
             try:
-                self.logger.info(f"🔍 Searching: {query}")
+                self.logger.info(f"Searching: {query}")
                 results = self._search_mouser_api(query)
                 all_products.extend(results)
                 
@@ -214,7 +214,7 @@ class MouserSimilarityAnalyzer:
                 time.sleep(1)
                 
             except Exception as e:
-                self.logger.warning(f"⚠️ Search failed for '{query}': {str(e)}")
+                self.logger.warning(f"Search failed for '{query}': {str(e)}")
                 continue
         
         # Remove duplicates based on part number
@@ -227,7 +227,7 @@ class MouserSimilarityAnalyzer:
                 seen_parts.add(part_number)
                 unique_products.append(product)
         
-        self.logger.info(f"📊 Found {len(unique_products)} unique products")
+        self.logger.info(f"Found {len(unique_products)} unique products")
         return unique_products[:self.search_config['max_total_results']]
     
     def _search_mouser_api(self, query: str) -> List[Dict]:
@@ -281,13 +281,13 @@ class MouserSimilarityAnalyzer:
                     })
                     
             except Exception as e:
-                self.logger.warning(f"⚠️ Failed to score product: {str(e)}")
+                self.logger.warning(f"Failed to score product: {str(e)}")
                 continue
         
         # Sort by similarity score
         scored_products.sort(key=lambda x: x['similarity_score'], reverse=True)
         
-        self.logger.info(f"🎯 Scored {len(scored_products)} products above threshold")
+        self.logger.info(f"Scored {len(scored_products)} products above threshold")
         return scored_products
     
     def _compute_similarity_score(self, product_specs: Dict, target_specs: Dict) -> float:

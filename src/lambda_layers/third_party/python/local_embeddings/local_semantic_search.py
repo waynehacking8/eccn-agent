@@ -31,9 +31,9 @@ def load_eccn_embeddings():
             with open(pickle_path, 'rb') as f:
                 _embeddings_data = pickle.load(f)
             _entries = _embeddings_data['entries']
-            print(f" Loaded {len(_entries)} ECCN entries for local search")
+            print(f"Loaded {len(_entries)} ECCN entries for local search")
         except Exception as e:
-            print(f" Error loading embeddings: {e}")
+            print(f"Error loading embeddings: {e}")
             _embeddings_data = None
             _entries = []
     return _embeddings_data, _entries
@@ -44,9 +44,9 @@ def initialize_openai_client():
     if _openai_client is None:
         try:
             _openai_client = OpenAIClient()
-            print(" OpenAI client initialized for query embedding")
+            print("OpenAI client initialized for query embedding")
         except Exception as e:
-            print(f" Error initializing OpenAI client: {e}")
+            print(f"Error initializing OpenAI client: {e}")
             _openai_client = None
     return _openai_client
 
@@ -240,7 +240,7 @@ def fallback_search(query_text: str, size: int = 5, eccn_category: Optional[str]
 
 def test_local_search():
     """Test the local semantic search"""
-    print(" Testing Local Semantic Search with Sharepoint Tool")
+    print("Testing Local Semantic Search with Sharepoint Tool")
     print("=" * 60)
     
     # Test 1: Basic search
@@ -248,24 +248,24 @@ def test_local_search():
     results = local_semantic_search("encryption software", size=3)
     
     if results['results']:
-        print(f" Found {len(results['results'])} results:")
+        print(f"Found {len(results['results'])} results:")
         for i, result in enumerate(results['results'], 1):
-            print(f"  {i}. {result['eccn_code']}: {result['description'][:80]}...")
-            print(f"     Score: {result['score']:.4f}")
+            print(f"{i}. {result['eccn_code']}: {result['description'][:80]}...")
+            print(f"   Score: {result['score']:.4f}")
     else:
-        print(f" No results found. Error: {results.get('error', 'Unknown')}")
+        print(f"No results found. Error: {results.get('error', 'Unknown')}")
     
     # Test 2: Category filter
     print("\n Test 2: Category Filter")
     results = local_semantic_search("telecommunications", size=3, eccn_category="5")
     
     if results['results']:
-        print(f" Found {len(results['results'])} results in category 5:")
+        print(f"Found {len(results['results'])} results in category 5:")
         for i, result in enumerate(results['results'], 1):
-            print(f"  {i}. {result['eccn_code']}: {result['description'][:80]}...")
-            print(f"     Score: {result['score']:.4f}")
+            print(f"{i}. {result['eccn_code']}: {result['description'][:80]}...")
+            print(f"   Score: {result['score']:.4f}")
     else:
-        print(f" No results found. Error: {results.get('error', 'Unknown')}")
+        print(f"No results found. Error: {results.get('error', 'Unknown')}")
 
 if __name__ == "__main__":
     test_local_search()

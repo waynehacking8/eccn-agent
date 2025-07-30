@@ -39,7 +39,7 @@ group_by_first_item = functools.partial(itertools.groupby, key=operator.itemgett
 
 
 ############################################################
-## Annotation
+##Annotation
 ############################################################
 
 @cython.cfunc
@@ -184,12 +184,12 @@ def markup_serialize_tokens(tokens, markup_func):
 
 
 ############################################################
-## HTML Diffs
+##HTML Diffs
 ############################################################
 
 def htmldiff(old_html, new_html):
-    ## FIXME: this should take parsed documents too, and use their body
-    ## or other content.
+    ##FIXME: this should take parsed documents too, and use their body
+    ##or other content.
     """ Do a diff of the old and new document.  The documents are HTML
     *fragments* (str/UTF8 or unicode), they are not complete documents
     (i.e., no <html> tag).

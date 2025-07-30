@@ -1099,7 +1099,7 @@ def IS_CHARACTER_JUNK(ch, ws=" \t"):
 
 
 ########################################################################
-###  Unified Diff
+### Unified Diff
 ########################################################################
 
 def _format_range_unified(start, stop):
@@ -1183,7 +1183,7 @@ def unified_diff(a, b, fromfile='', tofile='', fromfiledate='',
 
 
 ########################################################################
-###  Context Diff
+### Context Diff
 ########################################################################
 
 def _format_range_context(start, stop):

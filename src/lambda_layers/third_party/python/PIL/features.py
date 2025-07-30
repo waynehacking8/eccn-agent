@@ -266,7 +266,7 @@ def pilinfo(out: IO[str] | None = None, supported_formats: bool = True) -> None:
     py_version_lines = sys.version.splitlines()
     print(f"Python {py_version_lines[0].strip()}", file=out)
     for py_version in py_version_lines[1:]:
-        print(f"       {py_version.strip()}", file=out)
+        print(f"     {py_version.strip()}", file=out)
     print("-" * 68, file=out)
     print(f"Python executable is {sys.executable or 'unknown'}", file=out)
     if sys.prefix != sys.base_prefix:

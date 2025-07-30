@@ -85,7 +85,7 @@ class CLexer(object):
     ######################--   PRIVATE   --######################
 
     ##
-    ## Internal auxiliary methods
+    ##Internal auxiliary methods
     ##
     def _error(self, msg, token):
         location = self._make_tok_location(token)
@@ -96,7 +96,7 @@ class CLexer(object):
         return (token.lineno, self.find_tok_column(token))
 
     ##
-    ## Reserved keywords
+    ##Reserved keywords
     ##
     keywords = (
         'AUTO', 'BREAK', 'CASE', 'CHAR', 'CONST',
@@ -124,7 +124,7 @@ class CLexer(object):
         keyword_map[keyword[:2].upper() + keyword[2:].lower()] = keyword
 
     ##
-    ## All the tokens recognized by the lexer
+    ##All the tokens recognized by the lexer
     ##
     tokens = keywords + keywords_new + (
         # Identifiers
@@ -188,7 +188,7 @@ class CLexer(object):
     )
 
     ##
-    ## Regexes for use in tokens
+    ##Regexes for use in tokens
     ##
     ##
 
@@ -275,7 +275,7 @@ class CLexer(object):
     hex_floating_constant = '('+hex_prefix+'('+hex_digits+'|'+hex_fractional_constant+')'+binary_exponent_part+'[FfLl]?)'
 
     ##
-    ## Lexer states: used for preprocessor \n-terminated directives
+    ##Lexer states: used for preprocessor \n-terminated directives
     ##
     states = (
         # ppline: preprocessor line directives
@@ -299,7 +299,7 @@ class CLexer(object):
             return t
 
     ##
-    ## Rules for the ppline state
+    ##Rules for the ppline state
     ##
     @TOKEN(string_literal)
     def t_ppline_FILENAME(self, t):
@@ -339,7 +339,7 @@ class CLexer(object):
         self._error('invalid #line directive', t)
 
     ##
-    ## Rules for the pppragma state
+    ##Rules for the pppragma state
     ##
     def t_pppragma_NEWLINE(self, t):
         r'\n'
@@ -361,7 +361,7 @@ class CLexer(object):
         self._error('invalid #pragma directive', t)
 
     ##
-    ## Rules for the normal state
+    ##Rules for the normal state
     ##
     t_ignore = ' \t'
 

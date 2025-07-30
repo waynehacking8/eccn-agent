@@ -41,10 +41,10 @@ def load_optimized_system_prompt():
     """Load the optimized system prompt based on Round 3 results"""
     return """You are an expert in US Export Control Classification specialized in determining the correct Export Control Classification Number (ECCN) for products based on the Commerce Control List (CCL).
 
-## Your Task
+##Your Task
 Analyze the provided product information and determine the correct US Export Control Classification Number (ECCN). Follow the structured approach below to ensure accurate classification.
 
-## Analysis Framework
+##Analysis Framework
 1. First, create a detailed summary of the product's technical specifications and capabilities
 2. Identify whether the product primarily falls under:
    - Category 4 (Computers)
@@ -91,14 +91,14 @@ Analyze the provided product information and determine the correct US Export Con
    - Whether the product meets or fails to meet that threshold
    - Specific evidence from the product specifications supporting your determination
 
-## Key Classification Guidelines
+##Key Classification Guidelines
 - 5A002 is for products with substantial cryptographic capabilities for data confidentiality
 - 5A992.c is for products with security features using cryptography that don't meet 5A002 thresholds
 - 5A991.b.1 is the correct classification for most basic telecommunications switching equipment (including Ethernet switches, routers, media converters)
 - 5A991 is for telecommunications equipment WITHOUT security features using cryptography
 - Always provide complete classification including all applicable subcategories (e.g., 5A991.b.1, not just 5A991)
 
-## Response Format
+##Response Format
 Structure your analysis as follows:
 
 1. Product Summary
