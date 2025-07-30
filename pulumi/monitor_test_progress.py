@@ -84,7 +84,7 @@ def main():
             time.sleep(30)  # 每30秒檢查一次
             
     except KeyboardInterrupt:
-        print("\n👋 監控已停止")
+        print("\n監控已停止")
 
 if __name__ == "__main__":
     main()

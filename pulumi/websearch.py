@@ -173,7 +173,7 @@ class ECCNWebSearcher:
     def _search_general_sources(self, product_model: str) -> List[Dict]:
         """搜索一般來源"""
         
-        self.logger.info("🌐 搜索一般來源")
+        self.logger.info("搜索一般來源")
         results = []
         
         queries = [

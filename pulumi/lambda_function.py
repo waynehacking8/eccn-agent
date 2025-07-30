@@ -384,7 +384,7 @@ class CompletePipelineECCNClassifier:
     def _websearch_validation(self, product_model: str) -> Dict:
         """WebSearch交叉驗證"""
         try:
-            self.logger.info("🌐 執行WebSearch交叉驗證...")
+            self.logger.info("執行WebSearch交叉驗證...")
             
             from websearch import ECCNWebSearcher
             web_searcher = ECCNWebSearcher(self.logger)
