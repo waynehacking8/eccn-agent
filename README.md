@@ -6,7 +6,7 @@
 
 ECCN 智能分析管道是一個端到端的解決方案，具備以下功能：
 - **Two-Lambda Pipeline 架構**：PDF Parser + Main Classifier 分離式處理
-- **真實 ECCN Embeddings**：使用 Jaccard 相似性 + 關鍵字加權的余弦相似性搜索
+- **智慧型產品相似性分析**：基於技術規格的 Jaccard 相似性比對演算法
 - **內容基礎分類**：純粹基於 PDF 技術規格分析，不依賴產品命名模式
 - **工具增強系統**：整合 Mouser API 和 WebSearch 驗證
 - **AI 智能分析**：AWS Bedrock Claude 3.7 Sonnet 提供最終分類決策
@@ -35,8 +35,8 @@ ECCN 智能分析管道是一個端到端的解決方案，具備以下功能：
 
 ###核心組件
 - **PDF Parser Lambda**: PyMuPDF4LLM 解析，支援 multipart/form-data 上傳，處理完成後存儲至 S3
-- **Main Classifier Lambda**: enhanced_handler_v3_2.py，整合真實 ECCN embeddings cosine similarity
-- **RAG 系統**: 真實 ECCN embeddings 資料（eccn_embeddings.pkl）+ Jaccard 相似性搜索
+- **Main Classifier Lambda**: lambda_function.py，整合 Mouser 產品相似性分析與 WebSearch 驗證
+- **相似性分析系統**: 基於技術規格的產品比對演算法，使用 Jaccard 係數進行特徵集合比較
 - **工具增強**: Mouser API 整合 + WebSearch 驗證系統
 - **AWS Bedrock**: Claude 3.7 Sonnet 模型進行最終 AI 分析
 - **測試框架**: 全面的 54 案例 ground truth 驗證 + 自動分析歸檔（100% 覆蓋率）
